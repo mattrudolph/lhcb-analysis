@@ -12,7 +12,7 @@ mkdir -p gangadir
 if [ ! -f "$HOME/.gangarc" ]
 then
     #create a gangarc
-    /bin/bash -c 'source %s/group_login.sh && . SetupProject.sh ganga && ganga -g'
+    /bin/bash -c "source $VO_LHCB_SW_DIR/group_login.sh && . SetupProject.sh ganga && ganga -g"
 fi
 
 #reset the gangadir
@@ -25,3 +25,9 @@ fi
 
 #copy the ganga.py -- would prefer to tell ganga where to find it but don't see how
 cp analysisbase/python/ganga.py $HOME/.ganga.py
+
+#setup each package if you want to specify
+for package in $@
+do
+    cd $package && ./setup.sh && cd ../
+done

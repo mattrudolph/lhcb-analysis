@@ -1,0 +1,5 @@
+*~
+*.pyc
+gangadir*
+*.dst
+*.root

@@ -6,7 +6,7 @@ int main() {
 
   std::cout << "Hello world" << std::endl;
 
-  BaseLoop b;
+  AnalysisBase::BaseLoop b;
   b.printIdx();
   
   return 0;

@@ -1,20 +1,32 @@
 #ifndef BASELOOP_H
 #define BASELOOP_H
 
+/**
+   Basic Class for looping on a TTree
+ */
 
-class BaseLoop {
+#include "TChain.h"
 
- public:
-  BaseLoop();
+namespace AnalysisBase{
 
-  virtual ~BaseLoop() {}
+  class BaseLoop {
+    
+  public:
+    BaseLoop(TChain* chain = 0);
 
-  void printIdx();
+    virtual ~BaseLoop() {}
+    
+    void printIdx();
   
- private:
+  private:
 
-  int m_idx;
+    //This is what I loop over
+    TChain * m_chain;
 
-};
+    int m_idx;
+
+  };
+
+}
 
 #endif

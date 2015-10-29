@@ -10,16 +10,21 @@ TARGETS := $(notdir $(basename $(wildcard util/*.cpp)))
 SOURCES:=$(wildcard src/*.cpp)
 OBJS:=$(SOURCES:src/%.cpp=lib/%.o)
 
+ROOTCFLAGS=`root-config --cflags`
+CFLAGS=-c -g -Wall -fPIC $(ROOTCFLAGS)
+ROOTLDFLAGS=`root-config --glibs`
+
+
 all: $(TARGETS) $(OBJS)
 
 $(TARGETS): %:  %.cpp lib$(PACKAGE).so
-	g++ $< -o bin/$@ -Iinclude -Llib -l$(PACKAGE)
+	g++ $< -o bin/$@ -Iinclude $(ROOTCFLAGS) -Llib -l$(PACKAGE) $(ROOTLDFLAGS)
 
 lib$(PACKAGE).so: $(OBJS)
-	g++ -shared -Wall -o lib/$@ $^
+	g++ -shared -Wall $(ROOTLDFLAGS) -o lib/$@ $^
 
 lib/%.o: %.cpp
-	g++ -g -Wall -fPIC -Iinclude -o $@ -c $<
+	g++ $(CFLAGS) -Iinclude -o $@ $<
 
 clean:
 	rm -f lib/* bin/*

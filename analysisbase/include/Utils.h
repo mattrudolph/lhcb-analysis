@@ -1,18 +1,21 @@
 #ifndef UTILS_H
 #define UTILS_H
 
-class Test {
+namespace AnalysisBase {
 
- public:
-  Test();
-  ~Test() {}
+  class Test {
 
-
-  void run();
-  int m_idx;
+  public:
+    Test();
+    ~Test() {}
+    
+    
+    void run();
+    int m_idx;
   
+    
+  };
 
-};
-
+}
 
 #endif

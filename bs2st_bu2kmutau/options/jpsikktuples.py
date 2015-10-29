@@ -3,13 +3,12 @@ from bs2st_bu2kmutau.options.tuplebranchinfos import *
 from DecayTreeTuple.Configuration import *
 from Configurables import TupleToolTISTOS
 
-tuple = DecayTreeTuple("Bs2st2BuK_Tuple")
+tuple = DecayTreeTuple("Bs2st2BuK_JpsiK_Tuple")
 tuple.Decay = "[B*_s20 -> ^(B+ -> ^(J/psi(1S) -> ^mu+ ^mu-) ^K+) ^K-]CC"
 
 toolList = ['TupleToolGeometry',
             'TupleToolPrimaries',
             'TupleToolEventInfo',
-            'TupleToolTISTOS',
             'TupleToolAngles',]
 tuple.ToolList += toolList
 
@@ -36,7 +35,7 @@ tuple.TupleToolTISTOS.TriggerList = ["Hlt2DiMuonJPsiDecision" ]
 tuple.TupleToolTISTOS.VerboseHlt2 = True
 
 
-tupleSS = DecayTreeTuple("Bss2BuKSS_Tuple")
+tupleSS = DecayTreeTuple("Bss2BuKSS_JpsiK_Tuple")
 tupleSS.Decay = "[B*_s20 -> ^(B+ -> ^(J/psi(1S) -> ^mu+ ^mu-) ^K+) ^K+]CC"
 
 tupleSS.ToolList += toolList

@@ -41,6 +41,9 @@ fi
 #copy the ganga.py -- would prefer to tell ganga where to find it but don't see how
 rsync $DIR/analysisbase/python/ganga.py $HOME/.ganga.py
 
+#run basic ganga setup -- disabled for now since analysis base gangasetup is empty
+#/bin/bash -c "source $VO_LHCB_SW_DIR/group_login.sh && . SetupProject.sh ganga && ganga $DIR/analysisbase/python/gangasetup.py"
+
 #setup each package if you want to specify
 for package in $@
 do

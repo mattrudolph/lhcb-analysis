@@ -1,4 +1,4 @@
-from bs2st_bu2kmutau.options.bs2st2buk_jpsik_mc import *
+from bs2st_bu2kmutau.options.bs2stbuk_kmux_mc import *
 
 from Configurables import DaVinci
 

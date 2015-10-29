@@ -9,6 +9,5 @@ mymcdict = {'Bs2st->(Bu->Kmumu)K' : "/MC/2012/Beam4000GeV-2012-MagDown-Nu2.5-Pyt
 }
 
 for label,path in mymcdict.iteritems():
-    if (len( box.select( name = label ) ) == 0 ):
-        box.add( BKQuery( path ).getDataset(), label)
+    addFullPathToBox( path, label )
 

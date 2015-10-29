@@ -1,3 +1,8 @@
+"""
+Provides selections for B*_s20 -> (B+ -> J/psi K+) K- staring from (B+ -> J/psi K+) stripping.
+
+"""
+
 line = "BetaSBu2JpsiKDetachedLine"
 location = "/Event/AllStreams/Phys/"+line+"/Particles"
 
@@ -14,7 +19,7 @@ BuFilterSel = Selection( name = 'BuFilterSel', Algorithm = _buFilter, RequiredSe
 
 from Configurables import CombineParticles
 _bss2buk = CombineParticles("Bss2BuK",
-                            DecayDescriptor = "[B*_s20 -> B+ K-]cc" ,
+                            DecayDescriptor = "[B*_s20 -> B+ K-]CC" ,
                             DaughtersCuts = {'K-': 'PIDK > 5'},
                             CombinationCut = "ADAMASS('B*_s20')<1*GeV",
                             MotherCut = "(VFASPF(VCHI2/VDOF)<10) & (BPVIPCHI2()<20)" )
@@ -29,7 +34,7 @@ SeqBss2BuK = SelectionSequence('SeqBss2BuK', TopSelection = Bss2buk )
 
 #Same sign backgrounds
 _bss2bukss = CombineParticles("Bss2BuKSS",
-                              DecayDescriptor = "[B*_s20 -> B+ K+]cc" ,
+                              DecayDescriptor = "[B*_s20 -> B+ K+]CC" ,
                               DaughtersCuts = {'K+': 'PIDK > 5'},
                               CombinationCut = "ADAMASS('B*_s20')<1*GeV",
                               MotherCut = "(VFASPF(VCHI2/VDOF)<10) & (BPVIPCHI2()<20)" )

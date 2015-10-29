@@ -12,7 +12,8 @@ def addBs2stInfo(branch):
         "BPVDIRA":"BPVDIRA",
         "BPVIPCHI2":"BPVIPCHI2()",
         "VCHI2PDOF":"VFASPF(VCHI2PDOF)",
-        "MIPCHI2DV":"MIPCHI2DV(PRIMARY)"}
+        "MIPCHI2DV":"MIPCHI2DV(PRIMARY)",
+    }
 
 def addKaonInfo(branch):
     tool = branch.addTupleTool("LoKi::Hybrid::TupleTool/Loki_k")
@@ -31,7 +32,8 @@ def addKaonInfo(branch):
         "PIDK":"PIDK",
         "PIDp":"PIDp",
         "PIDmu":"PIDmu",
-        "BPVZ":"BPV(VZ)"}
+        "BPVZ":"BPV(VZ)",
+    }
 
 def addBuInfo(branch):
     tool = branch.addTupleTool("LoKi::Hybrid::TupleTool/Loki_bu")
@@ -49,7 +51,8 @@ def addBuInfo(branch):
         "BPVDIRA":"BPVDIRA",
         "BPVLTIME":"BPVLTIME()",
         "BPVZ":"BPV(VZ)",
-        "VCHI2PDOF":"VFASPF(VCHI2PDOF)"}
+        "VCHI2PDOF":"VFASPF(VCHI2PDOF)",
+    }
 
 def addJpsiInfo(branch):
     tool = branch.addTupleTool("LoKi::Hybrid::TupleTool/Loki_j")
@@ -61,7 +64,8 @@ def addJpsiInfo(branch):
         "PT":"PT",
         "PHI":"PHI",
         "ETA":"ETA",
-        "VCHI2PDOF":"VFASPF(VCHI2PDOF)"}
+        "VCHI2PDOF":"VFASPF(VCHI2PDOF)",
+    }
 
 
 def addMuonInfo(branch):
@@ -80,5 +84,6 @@ def addMuonInfo(branch):
         "PIDK":"PIDK",
         "PIDp":"PIDp",
         "PIDmu":"PIDmu",
-        "BPVZ":"BPV(VZ)"}
+        "BPVZ":"BPV(VZ)",
+    }
     

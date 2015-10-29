@@ -156,8 +156,12 @@ DaVinci().DataType = '%s'
                 continue
     
             print "Submitting", label, "with options", self.options, ", simulation?", isMC
-        
-            j = createGridJob(self.options + " " + label)
+            #name job based on options (without full path), or full options if that search doesn't work
+            try:
+                basename = re.search(".*/(.*)").group(1)
+            except AttributeError:
+                basename = self.options
+            j = createGridJob(basename + " " + label)
 
             #add options
             j.application.optsfile = self.options

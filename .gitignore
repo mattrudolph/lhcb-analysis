@@ -1,5 +1,10 @@
 *~
+*.o
+*.so
+*.gch
 *.pyc
 gangadir*
 *.dst
 *.root
+*/bin/*
+*/lib/*

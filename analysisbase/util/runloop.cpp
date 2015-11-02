@@ -1,6 +1,6 @@
 
 #include <iostream>
-#include "BaseLoop.h"
+#include "ExampleLoop.h"
 
 #include "TFile.h"
 
@@ -10,9 +10,20 @@ int main() {
 
   TFile f("test.root","RECREATE");
   
-  AnalysisBase::BaseLoop b;
-  b.printIdx();
-  
+  AnalysisBase::ExampleLoop l;
+  int res = l.initialize();
+  if(res) 
+    return res;
+
+  res = l.loop();
+  if(res) 
+    return res;
+
+  res = l.finalize();
+  if(res) 
+    return res;
+
+
   return 0;
 
 }

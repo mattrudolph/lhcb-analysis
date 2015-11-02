@@ -5,25 +5,29 @@
    Basic Class for looping on a TTree
  */
 
-#include "TChain.h"
+#include "TTree.h"
 
 namespace AnalysisBase{
 
   class BaseLoop {
     
   public:
-    BaseLoop(TChain* chain = 0);
+    BaseLoop(TTree* tree = 0);
 
     virtual ~BaseLoop() {}
     
-    void printIdx();
+    virtual int initialize();
   
-  private:
+    virtual int loop();
+
+    virtual int finalize();
+    
+  protected:
 
     //This is what I loop over
-    TChain * m_chain;
+    TTree * m_tree;
 
-    int m_idx;
+    virtual int execute() = 0;
 
   };
 

@@ -15,9 +15,9 @@ OBJS:=$(SOURCES:src/%.cpp=lib/%.o)
 DIRS=lib bin
 
 ROOTCFLAGS=`root-config --cflags`
-CFLAGS=-c -g -Wall -fPIC $(ROOTCFLAGS)
+CFLAGS=-c -g -Wall -Wl,--no-as-needed -fPIC $(ROOTCFLAGS)
 ROOTLDFLAGS=`root-config --glibs`
-
+LDFLAGS=-Wl,--no-as-needed $(ROOTLDFLAGS)
 
 all: $(DIRS) $(TARGETS) lib$(PACKAGE).so
 
@@ -25,10 +25,10 @@ $(DIRS):
 	mkdir -p $@
 
 $(TARGETS): %:  %.cpp lib$(PACKAGE).so
-	g++ $< -o bin/$@ -Iinclude $(ROOTCFLAGS) $(MYDEPSC) -Llib -l$(PACKAGE) $(ROOTLDFLAGS) $(MYDEPSLD) -g -Wl,--no-as-needed
+	g++ $< -o bin/$@ -Iinclude $(ROOTCFLAGS) $(MYDEPSC) -Llib -l$(PACKAGE) $(LDFLAGS) $(MYDEPSLD) -g -Wall
 
 lib$(PACKAGE).so: $(OBJS)
-	g++ -shared -Wall $(ROOTLDFLAGS) $(MYDEPSLD) -o lib/$@ $^
+	g++ -shared -Wall -g $(LDFLAGS) $(MYDEPSLD) -o lib/$@ $^
 
 lib/%.o: %.cpp %.h
 	g++ $(CFLAGS) $(MYDEPSC) -Iinclude -o $@ $<

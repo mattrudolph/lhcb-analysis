@@ -8,4 +8,4 @@ gangadir*
 *.root
 */bin/*
 */lib/*
-*/input/*
+*/input*

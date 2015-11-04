@@ -14,7 +14,7 @@ DIRS=lib bin
 ROOTCFLAGS=`root-config --cflags`
 CFLAGS=-c -g -Wall -fPIC $(ROOTCFLAGS)
 ROOTLDFLAGS=`root-config --glibs`
-
+LDFLAGS=-Wl,--no-as-needed $(ROOTLDFLAGS)
 
 all: $(DIRS) $(TARGETS) lib$(PACKAGE).so
 
@@ -22,10 +22,10 @@ $(DIRS):
 	mkdir -p $@
 
 $(TARGETS): %:  %.cpp lib$(PACKAGE).so
-	g++ $< -o bin/$@ -Iinclude $(ROOTCFLAGS) -Llib -l$(PACKAGE) $(ROOTLDFLAGS)
+	g++ $< -o bin/$@ -Iinclude $(ROOTCFLAGS) -Llib -l$(PACKAGE) $(LDFLAGS) -g -Wall
 
 lib$(PACKAGE).so: $(OBJS)
-	g++ -shared -Wall $(ROOTLDFLAGS) -o lib/$@ $^
+	g++ -shared -Wall -g $(LDFLAGS) -o lib/$@ $^
 
 lib/%.o: %.cpp %.h
 	g++ $(CFLAGS) -Iinclude -o $@ $<

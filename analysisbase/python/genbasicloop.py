@@ -10,6 +10,11 @@ import os
 from ROOT import TFile,TTree
 
 
+def preamble(packname,classname):
+    code = '#ifndef ROOT_Rtypes\n#include "Rtypes.h"\n#endif\n\nclass TTree;\n\n'
+    code +='namespace {} {{\n\n'.format(packname)
+    return code
+    
 
 if __name__ == '__main__':
     import argparse
@@ -20,6 +25,8 @@ if __name__ == '__main__':
                         help="Input file with tree")
     parser.add_argument('-t','--tree',type=str,required=True,
                         help="Path in file to tree")
+    parser.add_argument('-c','--classname',type=str,required=True,
+                        help="Class name to use for vars class")
     parser.add_argument('-o','--output',type=str,required=True,
                         help="Path to output package area")
     args = parser.parse_args()
@@ -39,11 +46,9 @@ if __name__ == '__main__':
     outdir = os.path.realpath(args.output)
     packname = os.path.basename(outdir)
     
-    code='#ifndef ROOT_Rtypes\n#include "Rtypes.h"\n#endif\n\n'
-    code += 'class TTree;\n\nnamespace {} {{\n\n'.format(packname)
-    filename = os.path.basename(tfile.GetName())[:-5]
-    code += '  class {}Vars {{\n\n    public:\n\n'.format(filename)
-    
+    code=preamble(packname,args.classname)
+    code +='  class {}_vars {{\n\n    public:\n\n'.format(args.classname)
+
     for lf in tree.GetListOfLeaves():
         n = lf.GetName()
         t = lf.GetTypeName()
@@ -54,14 +59,14 @@ if __name__ == '__main__':
 
     print code
 
-    with open(outdir+'/include/{}Vars.h'.format(filename),'w') as ftarget:
+    with open(outdir+'/include/{}_vars.h'.format(args.classname),'w') as ftarget:
         ftarget.write(code)
 
     #create cpp file that attaches those members to a tree
-    code = '#include "{}Vars.h"\n'.format(filename)
+    code = '#include "{}_vars.h"\n'.format(classname)
     code += '#include "TTree.h"\n\n'
     code += 'namespace {} {{\n\n'.format(packname)
-    code += '  void {}Vars::attachTree(TTree * tree) {{\n\n'.format(filename)
+    code += '  void {}_vars::attachTree(TTree * tree) {{\n\n'.format(classname)
 
     for lf in tree.GetListOfLeaves():
         n = lf.GetName()
@@ -72,5 +77,5 @@ if __name__ == '__main__':
     code += '\n  }\n\n}\n'
 
     print code 
-    with open(outdir+'/src/{}Vars.cpp'.format(filename),'w') as ftarget:
+    with open(outdir+'/src/{}_vars.cpp'.format(classname),'w') as ftarget:
         ftarget.write(code)

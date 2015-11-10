@@ -8,4 +8,6 @@ gangadir*
 *.root
 */bin/*
 */lib/*
-*/input*
+*/input/*
+*.log
+ldpath.sh

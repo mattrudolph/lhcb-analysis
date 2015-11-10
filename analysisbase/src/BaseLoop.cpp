@@ -1,11 +1,15 @@
 
 
 #include "BaseLoop.h"
+#include "TFile.h"
+#include "TTree.h"
 #include <iostream>
 
 namespace AnalysisBase {
 
-  BaseLoop::BaseLoop(TTree * tree) : m_tree(tree) {
+  BaseLoop::BaseLoop(TTree * tree) : m_tree(tree), m_outfile(0) {
+
+    //    m_tree->SetMakeClass(1);
 
   }
 
@@ -20,7 +24,14 @@ namespace AnalysisBase {
   int BaseLoop::finalize() {
 
     ///Any final steps after loop like writing output
-    ///BaseLoop is just empty
+    ///BaseLoop will write out everything in its object vector to the outfile if either are specified
+
+    if(m_outfile) {
+      m_outfile->cd();
+      for( size_t i =0; i< m_v_out.size(); ++i) {
+        m_v_out[i]->Write();
+      }
+    }
 
     return 0;
   }

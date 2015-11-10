@@ -5,8 +5,13 @@
    Basic Class for looping on a TTree
  */
 
-#include "TTree.h"
 #include "BaseLoop.h"
+
+#ifndef ROOT_Rtypes
+#include "Rtypes.h"
+#endif
+
+class TBranch;
 
 namespace AnalysisBase{
 
@@ -21,16 +26,11 @@ namespace AnalysisBase{
   
     virtual int loop();
 
-    virtual int finalize();
-    
   protected:
 
     //Need event and run number
     UInt_t  runNumber;
     ULong64_t   eventNumber;
-
-    TBranch*   m_bRunNumber;
-    TBranch*   m_bEventNumber;
 
     //If we are doing the cache over all candidites in an event
     bool m_doCache;

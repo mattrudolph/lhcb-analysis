@@ -1,6 +1,7 @@
 
 
 #include "DecayTreeLoop.h"
+#include "TTree.h"
 #include <iostream>
 #include "TDirectory.h"
 
@@ -8,18 +9,18 @@ namespace AnalysisBase {
 
   DecayTreeLoop::DecayTreeLoop(TTree * tree) : BaseLoop(tree) {
 
-    m_bRunNumber = m_tree->GetBranch("runNumber");
-    m_bEventNumber = m_tree->GetBranch("eventNumber");
+    TBranch * bRunNumber = m_tree->GetBranch("runNumber");
+    TBranch * bEventNumber = m_tree->GetBranch("eventNumber");
 
-    if(m_bRunNumber == 0 || m_bEventNumber==0) {
+    if(bRunNumber == 0 || bEventNumber==0) {
       std::cout << "INFO DecayTreeLoop: no run or event number in tree; will not cache candidates" << std::endl;
       m_doCache = false;
     } else {
       m_doCache = true;
     }
 
-    m_bRunNumber->SetAddress( &runNumber);
-    m_bEventNumber->SetAddress( &eventNumber);
+    bRunNumber->SetAddress( &runNumber);
+    bEventNumber->SetAddress( &eventNumber);
 
   }
 
@@ -28,14 +29,6 @@ namespace AnalysisBase {
     ///Do any setup you want before the actual looping like setting up histograms
     ///DecayTreeLoop just makes an empty version if you have nothing to declare
     
-    return 0;
-  }
-
-  int DecayTreeLoop::finalize() {
-
-    ///Any final steps after loop like writing output
-    ///DecayTreeLoop is just empty
-
     return 0;
   }
 
@@ -49,6 +42,7 @@ namespace AnalysisBase {
     }
 
     Long64_t nentries = m_tree->GetEntriesFast();
+    Long64_t nevents = 0;
     std::cout << "Begin loop over " << nentries << " entries" << std::endl;
    
     Long64_t nbytes = 0, nb = 0;
@@ -59,7 +53,7 @@ namespace AnalysisBase {
     }
     nb = m_tree->GetEntry(0);   nbytes += nb;
     for (Long64_t jentry=0; jentry<nentries;) {
-
+      std::cout << "New event " << jentry << std::endl;
       if(m_doCache)
         clearCache();
 
@@ -85,7 +79,7 @@ namespace AnalysisBase {
       //the last entry I read is a different event and will be used next overall loop
       //this happens even with only 1 candidate per event --> don't iterate jentry in the for loop
 
-
+      nevents++;
       //now execute with all candidates of one event in the cache
       int res = execute();
 
@@ -95,7 +89,7 @@ namespace AnalysisBase {
     }
 
     std::cout << "Read in " << nbytes << " bytes" << std::endl;
-
+    std::cout << "Processed " << nentries << " candidates in " << nevents << " events" << std::endl;
     return 0;
   }
 

@@ -3,18 +3,15 @@
 
 namespace AnalysisBase {
 
-  class Test {
+  class Particle;
+  class MotherParticle;
+  class InterParticle;
+  class StableParticle;
 
-  public:
-    Test();
-    ~Test() {}
-    
-    
-    void run();
-    int m_idx;
-  
-    
-  };
+
+  bool isMotherDaughter( const MotherParticle & p1, const StableParticle & p2 );
+
+
 
 }
 

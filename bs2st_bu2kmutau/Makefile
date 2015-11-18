@@ -17,7 +17,12 @@ DIRS=lib bin
 ROOTCFLAGS=`root-config --cflags`
 CFLAGS=-c -g -Wall -Wl,--no-as-needed -fPIC $(ROOTCFLAGS)
 ROOTLDFLAGS=`root-config --glibs`
-LDFLAGS=-Wl,--no-as-needed $(ROOTLDFLAGS)
+UNAME_S:=$(shell uname -s)
+ifeq ($(UNAME_S),Linux)
+	LDFLAGS=-Wl,--no-as-needed $(ROOTLDFLAGS)
+else
+	LDFLAGS=$(ROOTLDFLAGS)
+endif
 
 all: $(DIRS) $(TARGETS) lib$(PACKAGE).so
 

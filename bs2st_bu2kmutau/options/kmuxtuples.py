@@ -36,11 +36,12 @@ tupleSS = DecayTreeTuple("Bs2st2BuKSS_KMuX_Tuple")
 tupleSS.Decay = "([B*_s20 -> ^(B+ -> ^mu+ ^K+) ^K+]CC) || ([B*_s20 -> ^(B+ -> ^mu- ^K+) ^K+]CC)"
 tupleSS.ToolList += toolList
 
+#The "Km" is of course really the K+ attached at top level -- but this give same tree structure as right sign
 tupleSS.addBranches({
     "Bs2st" : "^(([B*_s20 -> (B+ -> mu+ K+) K+]CC) || ([B*_s20 -> (B+ -> mu- K+) K+]CC))",
     "Bu"    : "([B*_s20 -> ^(B+ -> mu+ K+) K+]CC) || ([B*_s20 -> ^(B+ -> mu- K+) K+]CC)",
-    "K1"    : "([B*_s20 -> (B+ -> mu+ K+) ^K+]CC) || ([B*_s20 -> (B+ -> mu- K+) ^K+]CC)",
-    "K2"    : "([B*_s20 -> (B+ -> mu+ ^K+) K+]CC) || ([B*_s20 -> (B+ -> mu- ^K+) K+]CC)",
+    "Km"    : "([B*_s20 -> (B+ -> mu+ K+) ^K+]CC) || ([B*_s20 -> (B+ -> mu- K+) ^K+]CC)",
+    "Kp"    : "([B*_s20 -> (B+ -> mu+ ^K+) K+]CC) || ([B*_s20 -> (B+ -> mu- ^K+) K+]CC)",
     "Mu"    : "([B*_s20 -> (B+ -> ^mu+ K+) K+]CC) || ([B*_s20 -> (B+ -> ^mu- K+) K+]CC)",
 })
 
@@ -48,6 +49,6 @@ tupleSS.addBranches({
 
 addBs2stInfo(tupleSS.Bs2st)
 addBuInfo(tupleSS.Bu)
-addKaonInfo(tupleSS.K1)
-addKaonInfo(tupleSS.K2)
+addKaonInfo(tupleSS.Km)
+addKaonInfo(tupleSS.Kp)
 addMuonInfo(tupleSS.Mu)

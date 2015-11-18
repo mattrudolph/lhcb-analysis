@@ -43,18 +43,18 @@ tupleSS.ToolList += toolList
 tupleSS.addBranches({
     "Bs2st" : "^([B*_s20 -> (B+ -> (J/psi(1S) -> mu+ mu-) K+) K+]CC)",
     "Bu"    : "[B*_s20 -> ^(B+ -> (J/psi(1S) -> mu+ mu-) K+) K+]CC",
-    "K1"    : "[B*_s20 -> (B+ -> (J/psi(1S) -> mu+ mu-) K+) ^K+]CC",
+    "Km"    : "[B*_s20 -> (B+ -> (J/psi(1S) -> mu+ mu-) K+) ^K+]CC",
     "Jpsi"  : "[B*_s20 -> (B+ -> ^(J/psi(1S) -> mu+ mu-) K+) K+]CC",
-    "K2"    : "[B*_s20 -> (B+ -> (J/psi(1S) -> mu+ mu-) ^K+) K+]CC",
+    "Kp"    : "[B*_s20 -> (B+ -> (J/psi(1S) -> mu+ mu-) ^K+) K+]CC",
     "Mup"   : "[B*_s20 -> (B+ -> (J/psi(1S) -> ^mu+ mu-) K+) K+]CC",
     "Mum"   : "[B*_s20 -> (B+ -> (J/psi(1S) -> mu+ ^mu-) K+) K+]CC"}
 )
 
 addBs2stInfo(tupleSS.Bs2st)
 addBuInfo(tupleSS.Bu)
-addKaonInfo(tupleSS.K1)
+addKaonInfo(tupleSS.Km)
 addJpsiInfo(tupleSS.Jpsi)
-addKaonInfo(tupleSS.K2)
+addKaonInfo(tupleSS.Kp)
 addMuonInfo(tupleSS.Mup)
 addMuonInfo(tupleSS.Mum)
 

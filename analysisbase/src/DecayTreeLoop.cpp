@@ -53,7 +53,6 @@ namespace AnalysisBase {
     }
     nb = m_tree->GetEntry(0);   nbytes += nb;
     for (Long64_t jentry=0; jentry<nentries;) {
-      std::cout << "New event " << jentry << std::endl;
       if(m_doCache)
         clearCache();
 

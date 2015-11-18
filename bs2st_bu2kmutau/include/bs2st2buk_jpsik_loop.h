@@ -19,18 +19,20 @@ namespace bs2st_bu2kmutau {
 
     std::vector<bs2st2buk_jpsik::Bs2st> m_v_bs2st;
     std::vector<bs2st2buk_jpsik::Bu> m_v_bu;
-    std::vector<bs2st2buk_jpsik::Km> m_v_km;
+    std::vector<bs2st2buk_jpsik::Kaon> m_v_km;
 
     std::vector<bs2st2buk_jpsik::Jpsi> m_v_jpsi;
-    std::vector<bs2st2buk_jpsik::Mup> m_v_mup;
-    std::vector<bs2st2buk_jpsik::Mum> m_v_mum;
+    std::vector<bs2st2buk_jpsik::Mu> m_v_mup;
+    std::vector<bs2st2buk_jpsik::Mu> m_v_mum;
 
-    std::vector<bs2st2buk_jpsik::Kp> m_v_kp;
+    std::vector<bs2st2buk_jpsik::Kaon> m_v_kp;
 
 
     TH1F * m_h_mmsq;
+    TH1F * m_h_mmsq_cut;
     TH1F * m_h_be;
     TH1F * m_h_me;
+    TH2F * m_h_mmsqvme;
     TH2F * m_h_mmsqvbe;
 
     //have to implement execute and cache

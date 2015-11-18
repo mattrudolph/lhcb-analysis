@@ -24,6 +24,8 @@ namespace AnalysisBase {
     Double_t              PY;
     Double_t              PZ;
     Double_t              M;
+    Double_t              MM;
+    Double_t              MMERR;
     Int_t                 ID;
 
 
@@ -36,6 +38,11 @@ namespace AnalysisBase {
     Double_t              OWNPV_CHI2;
     Int_t                 OWNPV_NDOF;
     Float_t               OWNPV_COV_[3][3];
+    Double_t              IP_OWNPV;
+    Double_t              IPCHI2_OWNPV;
+    Double_t              FD_OWNPV;
+    Double_t              FDCHI2_OWNPV;
+    Double_t              DIRA_OWNPV;
 
   };
 
@@ -74,6 +81,14 @@ namespace AnalysisBase {
     Double_t              ORIVX_CHI2;
     Int_t                 ORIVX_NDOF;
     Float_t               ORIVX_COV_[3][3];
+    Double_t              CosTheta;
+    Double_t              FD_ORIVX;
+    Double_t              FDCHI2_ORIVX;
+    Double_t              DIRA_ORIVX;
+    Double_t              PIDe;
+    Double_t              PIDmu;
+    Double_t              PIDK;
+    Double_t              PIDp;
   };
 
   //Particle with both
@@ -93,6 +108,10 @@ namespace AnalysisBase {
     Double_t              ORIVX_CHI2;
     Int_t                 ORIVX_NDOF;
     Float_t               ORIVX_COV_[3][3];
+    Double_t              CosTheta;
+    Double_t              FD_ORIVX;
+    Double_t              FDCHI2_ORIVX;
+    Double_t              DIRA_ORIVX;
     Double_t              ENDVERTEX_X;
     Double_t              ENDVERTEX_Y;
     Double_t              ENDVERTEX_Z;
@@ -104,6 +123,29 @@ namespace AnalysisBase {
     Float_t               ENDVERTEX_COV_[3][3];
 
   };
-
+  class EventInfo {
+    public:
+    UInt_t                nCandidate;
+    ULong64_t             totCandidates;
+    ULong64_t             EventInSequence;
+    UInt_t                BCID;
+    Int_t                 BCType;
+    UInt_t                OdinTCK;
+    UInt_t                L0DUTCK;
+    UInt_t                HLT1TCK;
+    UInt_t                HLT2TCK;
+    ULong64_t             GpsTime;
+    Short_t               Polarity;
+    Int_t                 nPV;
+    Float_t               PVX[100];
+    Float_t               PVY[100];
+    Float_t               PVZ[100];
+    Float_t               PVXERR[100];
+    Float_t               PVYERR[100];
+    Float_t               PVZERR[100];
+    Float_t               PVCHI2[100];
+    Float_t               PVNDOF[100];
+    Float_t               PVNTRACKS[100];
+  };
 }
 #endif

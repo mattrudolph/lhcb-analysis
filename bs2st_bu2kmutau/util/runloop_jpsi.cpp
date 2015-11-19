@@ -15,7 +15,7 @@ int main(int argc, char * argv[]) {
   //
 
 
-  TFile f("/Users/msrudolp/lhcb-analysis/bs2st_bu2kmutau/run/input/bs2st2buk_jpsik_mc.root");
+  TFile f("/home/mrudolph/lhcb-analysis/bs2st_bu2kmutau/run/input/bs2st2buk_jpsik_mc.root");
   TTree * tree = (TTree*) f.Get("Bss2BuK_Tuple/DecayTree");
   
   TFile fout("test_jpsi.root","RECREATE");

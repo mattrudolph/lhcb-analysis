@@ -9,6 +9,7 @@ gangadir*
 */bin/*
 */lib/*
 */input
+*/plots
 */input/*
 *.log
 ldpath.sh

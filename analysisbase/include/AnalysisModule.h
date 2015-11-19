@@ -26,6 +26,8 @@ namespace AnalysisBase {
 
     //This keeps track of things I want to write out
     std::vector<TObject*> m_v_out;
+
+    inline void addout( TObject * obj ) { m_v_out.push_back(obj); }
     
   };
 

@@ -2,10 +2,13 @@
 #include "DecayTreeLoop.h"
 #include <vector>
 
+class TH1F;
+
 namespace bs2st_bu2kmutau {
 
   class MissingMassModule;
-  
+  class Bs2stSelectModule;
+
   class bs2st2buk_jpsik_loop : public bs2st2buk_jpsik_vars, public AnalysisBase::DecayTreeLoop {
 
   public:
@@ -25,7 +28,11 @@ namespace bs2st_bu2kmutau {
 
     std::vector<bs2st2buk_jpsik::Kaon> m_v_kp;
 
+    TH1F * m_h_bs2st_m;
+
     MissingMassModule * m_mm_mod;
+    Bs2stSelectModule * m_sel_sig;
+    Bs2stSelectModule * m_sel_bkg;
 
     //have to implement execute and cache
     virtual int cacheCandidate();

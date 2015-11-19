@@ -13,7 +13,7 @@ namespace bs2st_bu2kmutau {
   //Takes two daughters for now...
   //stable Daughters don't have to be a derived class since only using their four-momentum
   ///Returns MissingEnergy1, MM1, MissingEnergy2, MM2 in vector
-  std::vector<double> missingMassSq( const AnalysisBase::MotherParticle & bs2st, const AnalysisBase::InterParticle & bu, const AnalysisBase::Particle & km, const AnalysisBase::Particle & d1, const AnalysisBase::Particle & d2 ) {
+  std::vector<double> missingMassSq( const AnalysisBase::InterParticle & bu, const AnalysisBase::Particle & km, const AnalysisBase::Particle & d1, const AnalysisBase::Particle & d2 ) {
 
     std::vector<double> ret;
 

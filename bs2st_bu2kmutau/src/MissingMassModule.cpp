@@ -27,9 +27,9 @@ namespace bs2st_bu2kmutau {
 
   }
 
-  std::vector<double> MissingMassModule::process( const Bs2st & bs2st, const Bu & bu, const Kaon & km, const Mu & mu, const Kaon & kp ) {
+  std::vector<double> MissingMassModule::process( const Bu & bu, const Kaon & km, const Mu & mu, const Kaon & kp ) {
 
-    std::vector<double> vmm = missingMassSq( bs2st, bu, km, mu, kp );
+    std::vector<double> vmm = missingMassSq( bu, km, mu, kp );
     for(size_t i=0; 2*i+1 < vmm.size(); ++i) {
       fillHistograms( vmm[2*i+1], vmm[2*i], (mu.PE + kp.PE)/1000. );
     }

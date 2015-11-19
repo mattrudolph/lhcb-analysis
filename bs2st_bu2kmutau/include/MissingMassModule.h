@@ -18,7 +18,7 @@ namespace bs2st_bu2kmutau {
 
     virtual int bookHistograms();
 
-    std::vector<double> process( const Bs2st & bs2st, const Bu & bu, const Kaon & km, const Mu & mu, const Kaon & kp );
+    std::vector<double> process( const Bu & bu, const Kaon & km, const Mu & mu, const Kaon & kp );
 
     void fillHistograms(double mmsq, double miss_e, double vis_e);
     

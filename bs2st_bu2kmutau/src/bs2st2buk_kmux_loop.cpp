@@ -41,7 +41,7 @@ namespace bs2st_bu2kmutau {
 
     for(size_t i=0; i<m_v_bs2st.size(); ++i ) {
     
-      std::vector<double> vmm = m_mm_mod->process( m_v_bs2st[i], m_v_bu[i], m_v_km[i], m_v_mu[i], m_v_kp[i] );
+      std::vector<double> vmm = m_mm_mod->process( m_v_bu[i], m_v_km[i], m_v_mu[i], m_v_kp[i] );
 
       double vis_e = (m_v_mu[i].PE + m_v_kp[i].PE)/1000.;
       

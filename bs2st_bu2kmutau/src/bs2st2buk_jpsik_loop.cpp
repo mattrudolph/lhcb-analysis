@@ -1,8 +1,8 @@
 
 
 #include "bs2st2buk_jpsik_loop.h"
-#include "MissingMass.h"
 #include "MissingMassModule.h"
+#include "Bs2stSelectModule.h"
 #include "TFile.h"
 #include "TH2.h"
 #include <iostream>
@@ -46,9 +46,28 @@ namespace bs2st_bu2kmutau {
 
     for(size_t i=0; i<m_v_bs2st.size(); ++i ) {
 
-      m_mm_mod->process( m_v_bs2st[i], m_v_bu[i], m_v_km[i], m_v_mup[i], m_v_kp[i] );
-      m_mm_mod->process( m_v_bs2st[i], m_v_bu[i], m_v_km[i], m_v_mum[i], m_v_kp[i] );
+      m_h_bs2st_m->Fill( m_v_bs2st[i].M/1000. );
 
+      //Check if in signal region
+      bool inSig = (fabs(m_v_bs2st[i].M - 5839.83) < 25 );
+
+
+      std::vector<double> vmm = m_mm_mod->process( m_v_bu[i], m_v_km[i], m_v_mup[i], m_v_kp[i] );
+      double vis_e = (m_v_mup[i].PE + m_v_kp[i].PE)/1000.;
+      for(size_t i=0; 2*i+1 < vmm.size(); ++i) {
+     
+        double b_e = vmm[2*i] + vis_e;
+
+        if( inSig ) {
+          m_sel_sig->fillHistograms( m_v_km[i], m_v_bu[i], b_e );
+        } else {
+          m_sel_bkg->fillHistograms( m_v_km[i], m_v_bu[i], b_e );
+        }
+
+      }
+      
+      // vmm = m_mm_mod->process( m_v_bu[i], m_v_km[i], m_v_mum[i], m_v_kp[i] );
+      // vis_e = (m_v_mum[i].PE + m_v_kp[i].PE)/1000.;
     }
     return 0;
   }
@@ -62,6 +81,15 @@ namespace bs2st_bu2kmutau {
 
     m_mm_mod = new MissingMassModule(m_outdir);
     m_modules.push_back(m_mm_mod);
+
+    m_sel_sig = new Bs2stSelectModule(m_outdir,"Bs2stSelect_Sig");
+    m_modules.push_back(m_sel_sig);
+    
+    m_sel_bkg = new Bs2stSelectModule(m_outdir,"Bs2stSelect_Bkg");
+    m_modules.push_back(m_sel_bkg);
+    
+    m_h_bs2st_m = new TH1F("h_bs2st_m","mass of reco bs2st; M [GeV]",200,5,7.5);
+    m_v_out.push_back(m_h_bs2st_m);
 
     AnalysisBase::BaseLoop::initialize();
     

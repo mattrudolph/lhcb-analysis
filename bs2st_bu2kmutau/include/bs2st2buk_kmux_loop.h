@@ -2,16 +2,15 @@
 #include "DecayTreeLoop.h"
 #include <vector>
 
-class TFile;
-class TH2F;
-class TH1F;
 
 namespace bs2st_bu2kmutau {
 
+  class MissingMassModule;
+  
   class bs2st2buk_kmux_loop : public bs2st2buk_kmux_vars, public AnalysisBase::DecayTreeLoop {
 
   public:
-    bs2st2buk_kmux_loop(TTree * tree);
+    bs2st2buk_kmux_loop(TTree * tree, TDirectory * parentdir, std::string name="bs2st2buk_kmux_loop");
 
     virtual int initialize();
 
@@ -23,12 +22,8 @@ namespace bs2st_bu2kmutau {
     std::vector<bs2st_bu2kmutau::Kaon> m_v_kp;
     std::vector<bs2st_bu2kmutau::Kaon> m_v_km;
 
-    TH1F * m_h_mmsq;
-    TH1F * m_h_mmsq_cut;
-    TH1F * m_h_be;
-    TH1F * m_h_me;
-    TH2F * m_h_mmsqvme;
-    TH2F * m_h_mmsqvbe;
+    MissingMassModule * m_mm_mod;
+    MissingMassModule * m_mm_cutmod;
 
     //have to implement execute and cache
     virtual int cacheCandidate();

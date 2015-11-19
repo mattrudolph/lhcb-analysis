@@ -8,10 +8,12 @@
 #include <iostream>
 
 namespace bs2st_bu2kmutau {
-
-///Calculate missing mass from B+ decay for B_s2^* -> B+ K-
-///Returns MissingEnergy1, MM1, MissingEnergy2, MM2 in vector
-  std::vector<double> missingMassSq( const AnalysisBase::MotherParticle & bs2st, const AnalysisBase::InterParticle & bu, const AnalysisBase::StableParticle & km, const AnalysisBase::StableParticle & mu, const AnalysisBase::StableParticle & kp ) {
+  
+  ///Calculate missing mass from B+ decay for B_s2^* -> B+ K-
+  //Takes two daughters for now...
+  //stable Daughters don't have to be a derived class since only using their four-momentum
+  ///Returns MissingEnergy1, MM1, MissingEnergy2, MM2 in vector
+  std::vector<double> missingMassSq( const AnalysisBase::MotherParticle & bs2st, const AnalysisBase::InterParticle & bu, const AnalysisBase::Particle & km, const AnalysisBase::Particle & d1, const AnalysisBase::Particle & d2 ) {
 
     std::vector<double> ret;
 
@@ -19,7 +21,6 @@ namespace bs2st_bu2kmutau {
     const double mbs2st = 5839.83; //MeV +- 0.19
     const double mbu = 5279.29; //+-0.15
     const double mk  = 493.677; //+-0.016
-    const double mmu = 105.658;
     
     ////
     //First need to calculate the B momentum
@@ -53,21 +54,21 @@ namespace bs2st_bu2kmutau {
 
 
     //solve for energy of missing particle
-    double de1 = sol1 - mu.PE - kp.PE;
-    double de2 = sol2 - mu.PE - kp.PE;
+    double de1 = sol1 - d1.PE - d2.PE;
+    double de2 = sol2 - d1.PE - d2.PE;
 
     //solve for its momentum components
     double bp1 = std::sqrt(sol1*sol1 - mbu*mbu);
     double bp2 = std::sqrt(sol2*sol2 - mbu*mbu);
     double l = std::sqrt(l2);
 
-    double dpx1 = ( bp1*bdx/l ) - mu.PX - kp.PX;
-    double dpy1 = ( bp1*bdy/l ) - mu.PY - kp.PY;
-    double dpz1 = ( bp1*bdz/l ) - mu.PZ - kp.PZ;
+    double dpx1 = ( bp1*bdx/l ) - d1.PX - d2.PX;
+    double dpy1 = ( bp1*bdy/l ) - d1.PY - d2.PY;
+    double dpz1 = ( bp1*bdz/l ) - d1.PZ - d2.PZ;
 
-    double dpx2 = ( bp2*bdx/l ) - mu.PX - kp.PX;
-    double dpy2 = ( bp2*bdy/l ) - mu.PY - kp.PY;
-    double dpz2 = ( bp2*bdz/l ) - mu.PZ - kp.PZ;
+    double dpx2 = ( bp2*bdx/l ) - d1.PX - d2.PX;
+    double dpy2 = ( bp2*bdy/l ) - d1.PY - d2.PY;
+    double dpz2 = ( bp2*bdz/l ) - d1.PZ - d2.PZ;
 
     //Solve for the missing mass^2
     double mm1 = de1*de1 - dpx1*dpx1 - dpy1*dpy1 - dpz1*dpz1;

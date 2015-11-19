@@ -7,7 +7,7 @@
 
 namespace AnalysisBase {
 
-  DecayTreeLoop::DecayTreeLoop(TTree * tree) : BaseLoop(tree) {
+  DecayTreeLoop::DecayTreeLoop(TTree * tree, std::string name) : BaseLoop(tree, name) {
 
     TBranch * bRunNumber = m_tree->GetBranch("runNumber");
     TBranch * bEventNumber = m_tree->GetBranch("eventNumber");
@@ -89,6 +89,7 @@ namespace AnalysisBase {
 
     std::cout << "Read in " << nbytes << " bytes" << std::endl;
     std::cout << "Processed " << nentries << " candidates in " << nevents << " events" << std::endl;
+
     return 0;
   }
 

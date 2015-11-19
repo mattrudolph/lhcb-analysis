@@ -18,7 +18,7 @@ namespace AnalysisBase{
   class DecayTreeLoop : public BaseLoop {
     
   public:
-    DecayTreeLoop(TTree* tree = 0);
+    DecayTreeLoop(TTree* tree = 0, std::string name = "DecayTreeLoop");
 
     virtual ~DecayTreeLoop() {}
     

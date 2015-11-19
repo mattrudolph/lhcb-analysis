@@ -2,14 +2,19 @@
 
 #include "bs2st2buk_jpsik_loop.h"
 #include "MissingMass.h"
+#include "MissingMassModule.h"
 #include "TFile.h"
 #include "TH2.h"
 #include <iostream>
 
 namespace bs2st_bu2kmutau {
 
-  bs2st2buk_jpsik_loop::bs2st2buk_jpsik_loop(TTree * tree) : AnalysisBase::DecayTreeLoop(tree) {
+  bs2st2buk_jpsik_loop::bs2st2buk_jpsik_loop(TTree * tree, TDirectory * parentdir, std::string name) : AnalysisBase::DecayTreeLoop(tree,name) {
 
+    if(parentdir != 0) {
+      m_outdir = parentdir->mkdir(m_name.c_str());
+    }
+    
     attachTree(m_tree);
 
   }
@@ -41,50 +46,8 @@ namespace bs2st_bu2kmutau {
 
     for(size_t i=0; i<m_v_bs2st.size(); ++i ) {
 
-      std::vector<double> mmret = missingMassSq( m_v_bs2st[i], m_v_bu[i], m_v_km[i], m_v_mup[i], m_v_kp[i] );
-      if(mmret.size() != 0) {
-
-        m_h_be->Fill(mmret[0] + m_v_mup[i].PE/1000. + m_v_kp[i].PE/1000.);
-        m_h_be->Fill(mmret[2] + m_v_mup[i].PE/1000. + m_v_kp[i].PE/1000.);
-
-        m_h_me->Fill(mmret[0]);
-        m_h_me->Fill(mmret[2]);
-
-        m_h_mmsq->Fill( mmret[1] );
-        m_h_mmsq->Fill( mmret[3] );
-
-      if( mmret[0] > 8 )
-        m_h_mmsq_cut->Fill( mmret[1] );
-      if( mmret[2] > 8 )
-        m_h_mmsq_cut->Fill( mmret[3] );
-
-        m_h_mmsqvme->Fill(mmret[0],mmret[1]);
-        m_h_mmsqvme->Fill(mmret[2],mmret[3]);
-        m_h_mmsqvbe->Fill(mmret[0] + m_v_mup[i].PE/1000. + m_v_kp[i].PE/1000.,mmret[1]);
-        m_h_mmsqvbe->Fill(mmret[2] + m_v_mup[i].PE/1000. + m_v_kp[i].PE/1000.,mmret[3]);
-      }
-
-      mmret = missingMassSq( m_v_bs2st[i], m_v_bu[i], m_v_km[i], m_v_mum[i], m_v_kp[i] );
-      if(mmret.size() == 0)
-        continue;
-        m_h_be->Fill(mmret[0] + m_v_mup[i].PE/1000. + m_v_kp[i].PE/1000.);
-        m_h_be->Fill(mmret[2] + m_v_mup[i].PE/1000. + m_v_kp[i].PE/1000.);
-
-        m_h_me->Fill(mmret[0]);
-        m_h_me->Fill(mmret[2]);
-
-        m_h_mmsq->Fill( mmret[1] );
-        m_h_mmsq->Fill( mmret[3] );
-
-      if( mmret[0] > 8 )
-        m_h_mmsq_cut->Fill( mmret[1] );
-      if( mmret[2] > 8 )
-        m_h_mmsq_cut->Fill( mmret[3] );
-
-        m_h_mmsqvme->Fill(mmret[0],mmret[1]);
-        m_h_mmsqvme->Fill(mmret[2],mmret[3]);
-        m_h_mmsqvbe->Fill(mmret[0] + m_v_mup[i].PE/1000. + m_v_kp[i].PE/1000.,mmret[1]);
-        m_h_mmsqvbe->Fill(mmret[2] + m_v_mup[i].PE/1000. + m_v_kp[i].PE/1000.,mmret[3]);
+      m_mm_mod->process( m_v_bs2st[i], m_v_bu[i], m_v_km[i], m_v_mup[i], m_v_kp[i] );
+      m_mm_mod->process( m_v_bs2st[i], m_v_bu[i], m_v_km[i], m_v_mum[i], m_v_kp[i] );
 
     }
     return 0;
@@ -92,23 +55,13 @@ namespace bs2st_bu2kmutau {
 
   int bs2st2buk_jpsik_loop::initialize() {
 
-    m_outfile = new TFile("testjpsi.root","recreate");
+    if(m_outdir==0) {
+      std::cerr << "bs2st2buk_jpsik_loop::initialize(): no outdir available" << std::endl;
+      return 1;
+    }
 
-    m_h_mmsq = new TH1F("h_mmsq","missing mass squared",200,-10,10);
-    m_v_out.push_back(m_h_mmsq);
-
-    m_h_mmsq_cut = new TH1F("h_mmsq_cut","missing mass squared",200,-10,10);
-    m_v_out.push_back(m_h_mmsq_cut);
-
-    m_h_be = new TH1F("h_be","b+ energy",200,0,400);
-    m_v_out.push_back(m_h_be);
-    m_h_me = new TH1F("h_me","missing energy",200,-100,300);
-    m_v_out.push_back(m_h_me);
-
-    m_h_mmsqvme = new TH2F("h_mmsqvme","missing mass squared v missing energy",200,-100,300,200,-10,10);
-    m_v_out.push_back(m_h_mmsqvme);
-    m_h_mmsqvbe = new TH2F("h_mmsqvbe","missing mass squared v b+ energy",200,0,400,200,-10,10);
-    m_v_out.push_back(m_h_mmsqvbe);
+    m_mm_mod = new MissingMassModule(m_outdir);
+    m_modules.push_back(m_mm_mod);
 
     return 0;
   }    

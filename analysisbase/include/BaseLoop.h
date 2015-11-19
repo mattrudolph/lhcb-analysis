@@ -6,17 +6,20 @@
  */
 
 class TTree;
-class TFile;
+class TDirectory;
 class TObject;
 
 #include <vector>
+#include <string>
 
 namespace AnalysisBase{
 
+  class AnalysisModule;
+  
   class BaseLoop {
     
   public:
-    BaseLoop(TTree* tree = 0);
+    BaseLoop(TTree* tree = 0, std::string name = "BaseLoop");
 
     virtual ~BaseLoop() {}
     
@@ -31,12 +34,17 @@ namespace AnalysisBase{
     //This is what I loop over
     TTree * m_tree;
 
+    //This is my name (commonly used to define output names, etc)
+    std::string m_name;
+    
     //File for output
-    TFile * m_outfile;
+    TDirectory * m_outdir;
 
-    //This keeps track of things I want to write out
+    //This keeps track of things I want to write out that aren't attached to a module
     std::vector<TObject*> m_v_out;
 
+    std::vector<AnalysisModule*> m_modules;
+    
     virtual int execute() = 0;
 
   };

@@ -15,7 +15,7 @@ OBJS:=$(SOURCES:src/%.cpp=lib/%.o)
 DIRS=lib bin
 
 ROOTCFLAGS=`root-config --cflags`
-CFLAGS=-c -g -Wall -Wl,--no-as-needed -fPIC $(ROOTCFLAGS)
+CFLAGS=-c -g -Wall -fPIC $(ROOTCFLAGS)
 ROOTLDFLAGS=`root-config --glibs`
 UNAME_S:=$(shell uname -s)
 ifeq ($(UNAME_S),Linux)
@@ -39,4 +39,4 @@ lib/%.o: %.cpp %.h
 	g++ $(CFLAGS) $(MYDEPSC) -Iinclude -o $@ $<
 
 clean:
-	rm -f lib/* bin/*
+	rm -fr lib/* bin/*

@@ -1,38 +1,44 @@
 
 
 #include "BaseLoop.h"
-#include "TFile.h"
+#include "AnalysisModule.h"
+#include "TDirectory.h"
 #include "TTree.h"
 #include <iostream>
 
 namespace AnalysisBase {
 
-  BaseLoop::BaseLoop(TTree * tree) : m_tree(tree), m_outfile(0) {
-
-    //    m_tree->SetMakeClass(1);
+  BaseLoop::BaseLoop(TTree * tree, std::string name) : m_tree(tree), m_name(name), m_outdir(0) {
 
   }
 
   int BaseLoop::initialize() {
 
     ///Do any setup you want before the actual looping like setting up histograms
-    ///BaseLoop just makes an empty version if you have nothing to declare
+    ///BaseLoop will handle booking for any AnalysisModules you add to its vector
+
+    for( std::vector<AnalysisModule*>::const_iterator it=m_modules.begin(); it!=m_modules.end(); ++it )
+      (*it)->bookHistograms();
     
     return 0;
   }
 
   int BaseLoop::finalize() {
-
     ///Any final steps after loop like writing output
-    ///BaseLoop will write out everything in its object vector to the outfile if either are specified
+    ///BaseLoop will write out everything in its object vector to the outdir if either are specified
 
-    if(m_outfile) {
-      m_outfile->cd();
+    if(m_outdir) {
+      m_outdir->cd();
       for( size_t i =0; i< m_v_out.size(); ++i) {
         m_v_out[i]->Write();
       }
     }
 
+    //Handle the output for all the attached modules
+    for( std::vector<AnalysisModule*>::const_iterator it=m_modules.begin(); it!=m_modules.end(); ++it ) {
+      (*it)->writeHistograms();
+    }
+    
     return 0;
   }
 

@@ -63,6 +63,8 @@ namespace bs2st_bu2kmutau {
     m_mm_mod = new MissingMassModule(m_outdir);
     m_modules.push_back(m_mm_mod);
 
+    AnalysisBase::BaseLoop::initialize();
+    
     return 0;
   }    
 

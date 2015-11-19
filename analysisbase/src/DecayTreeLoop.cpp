@@ -53,9 +53,10 @@ namespace AnalysisBase {
     }
     nb = m_tree->GetEntry(0);   nbytes += nb;
     for (Long64_t jentry=0; jentry<nentries;) {
+
       if(m_doCache)
         clearCache();
-
+      
       //read ahead in run+event number to identify all candidates in same event
       UInt_t currRun = runNumber;
       ULong64_t currEv = eventNumber;
@@ -81,7 +82,7 @@ namespace AnalysisBase {
       nevents++;
       //now execute with all candidates of one event in the cache
       int res = execute();
-
+      
       if(res!=0) {
         std::cout << "WARNING DecayTreeLoop::execute(): entry " << jentry << " returns error from execute." << std::endl;
       }

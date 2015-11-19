@@ -15,14 +15,12 @@ int main(int argc, char * argv[]) {
   //
 
 
-  std::cout << "Hello world" << std::endl;
-
-  TFile f("/home/mrudolph/lhcb-analysis/bs2st_bu2kmutau/run/input/bs2st2buk_jpsik_mc.root");
+  TFile f("/Users/msrudolp/lhcb-analysis/bs2st_bu2kmutau/run/input/bs2st2buk_jpsik_mc.root");
   TTree * tree = (TTree*) f.Get("Bss2BuK_Tuple/DecayTree");
   
   TFile fout("test_jpsi.root","RECREATE");
   
-  bs2st_bu2kmutau::bs2st2buk_jpsik_loop l(tree,&fout);
+  bs2st_bu2kmutau::bs2st2buk_jpsik_loop l(tree,&fout,"Signal");
   int res = l.initialize();
   if(res) 
     return res;
@@ -32,6 +30,20 @@ int main(int argc, char * argv[]) {
     return res;
 
   res = l.finalize();
+  if(res) 
+    return res;
+  
+  TTree * treeSS = (TTree*) f.Get("Bss2BuKSS_Tuple/DecayTree");
+  bs2st_bu2kmutau::bs2st2buk_jpsik_loop lSS(treeSS,&fout,"SameSignBG");
+  res = lSS.initialize();
+  if(res) 
+    return res;
+
+  res = lSS.loop();
+  if(res) 
+    return res;
+
+  res = lSS.finalize();
   if(res) 
     return res;
 

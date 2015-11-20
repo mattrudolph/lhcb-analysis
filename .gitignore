@@ -10,6 +10,8 @@ gangadir*
 */lib/*
 */input
 */plots
+*.png
+*.pdf
 */input/*
 *.log
 ldpath.sh

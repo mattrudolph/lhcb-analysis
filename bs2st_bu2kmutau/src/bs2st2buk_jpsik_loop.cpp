@@ -50,20 +50,42 @@ namespace bs2st_bu2kmutau {
 
       //Check if in signal region
       bool inSig = (fabs(m_v_bs2st[i].M - 5839.83) < 25 );
-
+      double meas_b_e = m_v_bu[i].PE/1000.;
 
       std::vector<double> vmm = m_mm_mod->process( m_v_bu[i], m_v_km[i], m_v_mup[i], m_v_kp[i] );
       double vis_e = (m_v_mup[i].PE + m_v_kp[i].PE)/1000.;
+
+      double de = 100000000.0;
+      size_t idx = vmm.size();
       for(size_t i=0; 2*i+1 < vmm.size(); ++i) {
      
         double b_e = vmm[2*i] + vis_e;
-
+        
         if( inSig ) {
+          if ( fabs(b_e - meas_b_e) < de ) {
+            de = fabs(b_e - meas_b_e);
+            idx = i;
+          }
+
           m_sel_sig->fillHistograms( m_v_km[i], m_v_bu[i], b_e );
         } else {
           m_sel_bkg->fillHistograms( m_v_km[i], m_v_bu[i], b_e );
         }
 
+      }
+
+      //Only process closest measurement for signal region events
+      if( inSig && idx != 100) {
+        for(size_t i=0; 2*i+1 < vmm.size(); ++i) {
+          double b_e = vmm[2*i] + vis_e;
+          if( i==idx ) {
+            m_sel_sig_right->fillHistograms( m_v_km[i], m_v_bu[i], b_e );
+            m_h_b_de_right->Fill( b_e - meas_b_e );
+          } else {
+            m_sel_sig_wrong->fillHistograms( m_v_km[i], m_v_bu[i], b_e );
+            m_h_b_de_wrong->Fill( b_e - meas_b_e );
+          }
+        }
       }
       
       // vmm = m_mm_mod->process( m_v_bu[i], m_v_km[i], m_v_mum[i], m_v_kp[i] );
@@ -87,10 +109,22 @@ namespace bs2st_bu2kmutau {
     
     m_sel_bkg = new Bs2stSelectModule(m_outdir,"Bs2stSelect_Bkg");
     m_modules.push_back(m_sel_bkg);
+
+    m_sel_sig_right = new Bs2stSelectModule(m_outdir,"Bs2stSelect_Sig_Right");
+    m_modules.push_back(m_sel_sig_right);
+
+    m_sel_sig_wrong = new Bs2stSelectModule(m_outdir,"Bs2stSelect_Sig_Wrong");
+    m_modules.push_back(m_sel_sig_wrong);
     
     m_h_bs2st_m = new TH1F("h_bs2st_m","mass of reco bs2st; M [GeV]",200,5,7.5);
     m_v_out.push_back(m_h_bs2st_m);
 
+    m_h_b_de_right = new TH1F("h_b_de_right","B+ #DeltaE for best choice",200,-20,20);
+    m_v_out.push_back(m_h_b_de_right);
+    
+    m_h_b_de_wrong = new TH1F("h_b_de_wrong","B+ #DeltaE for best choice",200,-20,20);
+    m_v_out.push_back(m_h_b_de_wrong);
+    
     AnalysisBase::BaseLoop::initialize();
     
     return 0;

@@ -29,10 +29,14 @@ namespace bs2st_bu2kmutau {
     std::vector<bs2st2buk_jpsik::Kaon> m_v_kp;
 
     TH1F * m_h_bs2st_m;
-
+    TH1F * m_h_b_de_right;
+    TH1F * m_h_b_de_wrong;
+    
     MissingMassModule * m_mm_mod;
     Bs2stSelectModule * m_sel_sig;
     Bs2stSelectModule * m_sel_bkg;
+    Bs2stSelectModule * m_sel_sig_right;
+    Bs2stSelectModule * m_sel_sig_wrong;
 
     //have to implement execute and cache
     virtual int cacheCandidate();

@@ -43,11 +43,11 @@ namespace bs2st_bu2kmutau {
   }
 
   int bs2st2buk_jpsik_loop::execute() {
-
+    
     for(size_t i=0; i<m_v_bs2st.size(); ++i ) {
-
-      m_h_bs2st_m->Fill( m_v_bs2st[i].M/1000. );
-
+      
+      m_h_bs2st_m_raw->Fill( m_v_bs2st[i].M/1000. );
+      
       //Check if in signal region
       bool inSig = (fabs(m_v_bs2st[i].M - 5839.83) < 25 );
       double meas_b_e = m_v_bu[i].PE/1000.;
@@ -55,39 +55,74 @@ namespace bs2st_bu2kmutau {
       std::vector<double> vmm = m_mm_mod->process( m_v_bu[i], m_v_km[i], m_v_mup[i], m_v_kp[i] );
       double vis_e = (m_v_mup[i].PE + m_v_kp[i].PE)/1000.;
 
+      if( vmm.size() == 4 ) {
+        m_h_bs2st_m_2sol->Fill( m_v_bs2st[i].M/1000. );
+      }
+
+      if(!inSig) {
+        m_mm_mod_bkg->fillHistograms( vmm, vis_e);
+      }
+      
       double de = 100000000.0;
       size_t idx = vmm.size();
-      for(size_t i=0; 2*i+1 < vmm.size(); ++i) {
-     
-        double b_e = vmm[2*i] + vis_e;
+      for(size_t j=0; 2*j+1 < vmm.size(); ++j) {
+
+        double m_e = vmm[2*j];
+        //require solution to be physical in energy
+        // if( m_e < 0 ) {
+        //   continue;
+        // }
+        
+        double b_e = m_e + vis_e;
+
+        m_h_bs2st_m->Fill( m_v_bs2st[i].M/1000. );
+        m_h_bs2st_e->Fill( m_v_bs2st[i].PE/1000. );
+        if(m_e > 0.){
+          m_h_bs2st_m_cut->Fill( m_v_bs2st[i].M/1000. );
+        }
         
         if( inSig ) {
           if ( fabs(b_e - meas_b_e) < de ) {
             de = fabs(b_e - meas_b_e);
-            idx = i;
+            idx = j;
           }
 
-          m_sel_sig->fillHistograms( m_v_km[i], m_v_bu[i], b_e );
+          m_sel_sig->fillHistograms( m_v_km[i], m_v_bu[i], b_e , m_e );
         } else {
-          m_sel_bkg->fillHistograms( m_v_km[i], m_v_bu[i], b_e );
+          m_sel_bkg->fillHistograms( m_v_km[i], m_v_bu[i], b_e, m_e );
         }
-
       }
 
       //Only process closest measurement for signal region events
-      if( inSig && idx != 100) {
-        for(size_t i=0; 2*i+1 < vmm.size(); ++i) {
-          double b_e = vmm[2*i] + vis_e;
-          if( i==idx ) {
-            m_sel_sig_right->fillHistograms( m_v_km[i], m_v_bu[i], b_e );
-            m_h_b_de_right->Fill( b_e - meas_b_e );
-          } else {
-            m_sel_sig_wrong->fillHistograms( m_v_km[i], m_v_bu[i], b_e );
-            m_h_b_de_wrong->Fill( b_e - meas_b_e );
+      if( idx != vmm.size()) {
+        for(size_t j=0; 2*j+1 < vmm.size(); ++j) {
+          //require solution to be physical in energy
+          double m_e = vmm[2*j];
+          // if( m_e < 0 )
+          //   continue;
+          double b_e = m_e + vis_e;
+
+          if(inSig) {
+            if( j==idx ) {
+              m_sel_sig_right->fillHistograms( m_v_km[i], m_v_bu[i], b_e, m_e );
+              m_h_b_de_right->Fill( b_e - meas_b_e );
+            } else {
+              m_sel_sig_wrong->fillHistograms( m_v_km[i], m_v_bu[i], b_e, m_e );
+              m_h_b_de_wrong->Fill( b_e - meas_b_e );
+            }
           }
+          std::vector<double> halfv;
+          halfv.push_back( m_e );
+          halfv.push_back( vmm[2*j+1] );
+          if( j==idx ) {
+            m_mm_mod_right->fillHistograms( halfv, vis_e);
+          } else {
+            m_mm_mod_wrong->fillHistograms( halfv, vis_e);
+          }
+
+          
         }
       }
-      
       // vmm = m_mm_mod->process( m_v_bu[i], m_v_km[i], m_v_mum[i], m_v_kp[i] );
       // vis_e = (m_v_mum[i].PE + m_v_kp[i].PE)/1000.;
     }
@@ -103,7 +138,16 @@ namespace bs2st_bu2kmutau {
 
     m_mm_mod = new MissingMassModule(m_outdir);
     m_modules.push_back(m_mm_mod);
+    
+    m_mm_mod_bkg = new MissingMassModule(m_outdir,"MissingMassSideband");
+    m_modules.push_back(m_mm_mod_bkg);
 
+    //unlike the other right/wrong selection modules -- these also require a positive missing energy sol'n, but not that we are in the signal region
+    m_mm_mod_right = new MissingMassModule(m_outdir,"MissingMassRight");
+    m_modules.push_back(m_mm_mod_right);
+    m_mm_mod_wrong = new MissingMassModule(m_outdir,"MissingMassWrong");
+    m_modules.push_back(m_mm_mod_wrong);
+    
     m_sel_sig = new Bs2stSelectModule(m_outdir,"Bs2stSelect_Sig");
     m_modules.push_back(m_sel_sig);
     
@@ -115,9 +159,23 @@ namespace bs2st_bu2kmutau {
 
     m_sel_sig_wrong = new Bs2stSelectModule(m_outdir,"Bs2stSelect_Sig_Wrong");
     m_modules.push_back(m_sel_sig_wrong);
+
+    m_outdir->cd();
+      
+    m_h_bs2st_m_raw = new TH1F("h_bs2st_m_raw","mass of reco bs2st; M [GeV]",200,5.5,7);
+    m_v_out.push_back(m_h_bs2st_m_raw);
+
+    m_h_bs2st_m_2sol = new TH1F("h_bs2st_m_2sol","mass of reco bs2st; M [GeV]",200,5.5,7);
+    m_v_out.push_back(m_h_bs2st_m_2sol);
     
-    m_h_bs2st_m = new TH1F("h_bs2st_m","mass of reco bs2st; M [GeV]",200,5,7.5);
+    m_h_bs2st_m = new TH1F("h_bs2st_m","mass of reco bs2st; M [GeV]",200,5.5,7);
     m_v_out.push_back(m_h_bs2st_m);
+
+    m_h_bs2st_e = new TH1F("h_bs2st_e","Energy of reco bs2st; E [GeV]",200,0,400);
+    m_v_out.push_back(m_h_bs2st_e);
+    
+    m_h_bs2st_m_cut = new TH1F("h_bs2st_m_cut","mass of reco bs2st; M [GeV]",200,5.5,7);
+    m_v_out.push_back(m_h_bs2st_m_cut);
 
     m_h_b_de_right = new TH1F("h_b_de_right","B+ #DeltaE for best choice",200,-20,20);
     m_v_out.push_back(m_h_b_de_right);

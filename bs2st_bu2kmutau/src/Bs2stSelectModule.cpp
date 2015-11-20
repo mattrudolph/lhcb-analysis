@@ -45,6 +45,12 @@ namespace bs2st_bu2kmutau {
     m_h_b_eta = new TH1F("h_b_eta","reco B+ eta; #eta",200,0,10);
     addout(m_h_b_eta);
 
+    m_h_m_e = new TH1F("h_m_e","reco missing energy; E [GeV]",200,-100,300);
+    addout(m_h_m_e);
+
+    m_h_v_e = new TH1F("h_v_e","reco visible energy; E [GeV]", 200,0,300);
+    addout(m_h_v_e);
+    
     m_h_bs2st_e = new TH1F("h_bs2st_e","reco B_s2^* energy; E [GeV]",200,0,300);
     addout(m_h_bs2st_e);
 
@@ -59,7 +65,7 @@ namespace bs2st_bu2kmutau {
 
 
   //Give energy in GeV!
-  void Bs2stSelectModule::fillHistograms( const Kaon & k, const Bu & bu, const double & be ) {
+  void Bs2stSelectModule::fillHistograms( const Kaon & k, const Bu & bu, const double & be , const double & me) {
 
     const double mbu = 5.27929; //+-0.00015
     double p = std::sqrt( be*be - mbu*mbu);
@@ -88,6 +94,9 @@ namespace bs2st_bu2kmutau {
     m_h_b_e->Fill( be );
     m_h_b_pt->Fill( pb.Pt() );
     m_h_b_eta->Fill( pb.Eta() );
+
+    m_h_m_e->Fill( me );
+    m_h_v_e->Fill( be - me );
 
     m_h_bs2st_e->Fill( pbs2st.E() );
     m_h_bs2st_pt->Fill( pbs2st.Pt() );

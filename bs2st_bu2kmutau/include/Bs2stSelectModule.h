@@ -16,7 +16,7 @@ namespace bs2st_bu2kmutau {
 
     virtual int bookHistograms();
 
-    void fillHistograms( const Kaon & k, const Bu & bu, const double & be );
+    void fillHistograms( const Kaon & k, const Bu & bu, const double & be , const double & me );
 
   private:
 
@@ -33,6 +33,9 @@ namespace bs2st_bu2kmutau {
     TH1F * m_h_b_pt;
     TH1F * m_h_b_eta;
 
+    TH1F * m_h_m_e;
+    TH1F * m_h_v_e;
+    
     TH1F * m_h_bs2st_e;
     TH1F * m_h_bs2st_pt;
     TH1F * m_h_bs2st_eta;

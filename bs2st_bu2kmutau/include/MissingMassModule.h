@@ -20,17 +20,19 @@ namespace bs2st_bu2kmutau {
 
     std::vector<double> process( const Bu & bu, const Kaon & km, const Mu & mu, const Kaon & kp );
 
-    void fillHistograms(double mmsq, double miss_e, double vis_e);
+    void fillHistograms(const std::vector<double> & vmm, const double & vis_e);
     
   private:
 
+    TH1F * m_h_nsols;
     TH1F * m_h_mmsq;
-    TH1F * m_h_mmsq_cut;
     TH1F * m_h_be;
     TH1F * m_h_me;
+    TH1F * m_h_ve;
     TH2F * m_h_mmsqvme;
     TH2F * m_h_mmsqvbe;
-
+    TH1F * m_h_disc;
+    
   };
     
 }

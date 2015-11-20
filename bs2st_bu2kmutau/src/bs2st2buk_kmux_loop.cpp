@@ -44,12 +44,20 @@ namespace bs2st_bu2kmutau {
       std::vector<double> vmm = m_mm_mod->process( m_v_bu[i], m_v_km[i], m_v_mu[i], m_v_kp[i] );
 
       double vis_e = (m_v_mu[i].PE + m_v_kp[i].PE)/1000.;
+
       
-      for(size_t i=0; 2*i+1 < vmm.size(); ++i) {
-        //check for good amount of missing energy
-        if( vmm[2*i] > 8 )
-          m_mm_cutmod->fillHistograms( vmm[2*i+1], vmm[2*i], vis_e );
+      for(std::vector<double>::iterator it=vmm.begin(); it < vmm.end(); ) {
+        if( *it < 8 ) {
+          //erase the next two
+          it = vmm.erase(it);
+          it = vmm.erase(it);
+        } else {
+          //or skip to the next pair
+          it +=2;
+        }
       }
+
+      m_mm_cutmod->fillHistograms( vmm, vis_e );
       
     }
     return 0;

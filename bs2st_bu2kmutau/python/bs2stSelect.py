@@ -36,3 +36,36 @@ for hkey in dsig.GetListOfKeys():
     hsig.Draw("SAME")
 
     c.SaveAs("plots/"+hsig.GetName()+".png")
+
+
+#special plot for right/wrong b energy
+dsig_right = f.Get("Signal/Bs2stSelect_Sig_Right")
+dsig_wrong = f.Get("Signal/Bs2stSelect_Sig_Wrong")
+
+hists = ["h_b_e", "h_bs2st_e", "h_m_e","h_b_pt","h_bs2st_pt"]
+for h in hists:
+    hsig_right = dsig_right.Get(h)
+    hsig_wrong = dsig_wrong.Get(h)
+
+    hbkg_in_sig = dbkg_in_sig.Get(h)
+    hbkg = dbkg.Get(h)
+    
+    hsig_right.Add( hbkg_in_sig, -0.5)
+    hsig_wrong.Add( hbkg_in_sig, -0.5)
+
+    hsig_right.Scale(0.5/hsig_right.Integral())
+    hsig_wrong.Scale(0.5/hsig_wrong.Integral())
+
+    hbkg.Scale(1./hbkg.Integral())
+    
+    hsig_right.SetLineColor(kBlue)
+    hsig_right.SetMarkerColor(kBlue)
+    
+    hbkg.SetLineColor(kRed)
+    hbkg.SetMarkerColor(kRed)
+
+    hbkg.Draw()
+    hsig_right.Draw("SAME")
+    hsig_wrong.Draw("SAME")
+
+    c.SaveAs("plots/" + h + "_rightwrong.png")

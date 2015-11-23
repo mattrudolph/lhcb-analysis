@@ -158,7 +158,7 @@ DaVinci().DataType = '%s'
             print "Submitting", label, "with options", self.options, ", simulation?", isMC
             #name job based on options (without full path), or full options if that search doesn't work
             try:
-                basename = re.search(".*/(.*)").group(1)
+                basename = re.search(".*/(.*)",self.options).group(1)
             except AttributeError:
                 basename = self.options
             j = createGridJob(basename + " " + label)

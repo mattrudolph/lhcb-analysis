@@ -33,20 +33,20 @@ int main(int argc, char * argv[]) {
   if(res) 
     return res;
 
-  // TTree * treeSS = (TTree*) f.Get("Bs2st2BuKSS_KMuX_Tuple/DecayTree");
+  TTree * treeSS = (TTree*) f.Get("Bs2st2BuKSS_RhoMuX_Tuple/DecayTree");
 
-  // bs2st_bu2kmutau::bs2st2buk_kmux_loop lSS(treeSS,&fout,"SameSignBG");
-  // res = lSS.initialize();
-  // if(res) 
-  //   return res;
+  bs2st_bu2rhomunu::bs2st2buk_rhomunu_loop lSS(treeSS,&fout,"SameSignBG");
+  res = lSS.initialize();
+  if(res) 
+    return res;
 
-  // res = lSS.loop();
-  // if(res) 
-  //   return res;
+  res = lSS.loop();
+  if(res) 
+    return res;
 
-  // res = lSS.finalize();
-  // if(res) 
-  //   return res;
+  res = lSS.finalize();
+  if(res) 
+    return res;
   
 
   return 0;

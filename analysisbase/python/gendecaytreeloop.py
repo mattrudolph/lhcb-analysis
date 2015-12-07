@@ -11,41 +11,14 @@ from ROOT import TFile,TTree
 
 from genbasicloop import preamble     
 
-basevars = ['P','PT','PE','PX','PY','PZ','M','ID','OWNPV_X','OWNPV_Y','OWNPV_Z','OWNPV_XERR','OWNPV_YERR','OWNPV_ZERR','OWNPV_CHI2','OWNPV_NDOF','OWNPV_COV_[3][3]',]
-momvars = ['ENDVERTEX_X','ENDVERTEX_Y','ENDVERTEX_Z','ENDVERTEX_XERR','ENDVERTEX_YERR','ENDVERTEX_ZERR','ENDVERTEX_CHI2','ENDVERTEX_NDOF','ENDVERTEX_COV_[3][3]',]
-kidvars = ['ORIVX_X','ORIVX_Y','ORIVX_Z','ORIVX_XERR','ORIVX_YERR','ORIVX_ZERR','ORIVX_CHI2','ORIVX_NDOF','ORIVX_COV_[3][3]',]
+def preamble(packname,classname):
+    code = '#ifndef ROOT_Rtypes\n#include "Rtypes.h"\n#endif\n\nclass TTree;\n\n'
+    code +='namespace {} {{\n\n'.format(packname)
+    return code
 
-def partclass(part, varlist):
-    #check if mom or kid
-    isMom = False
-    isKid = False
 
-    code = '    public:\n'
-    for (t,var) in varlist:
-        if var in basevars:
-            continue
-        if var in momvars:
-            isMom = True
-            continue
-        if var in kidvars:
-            isKid = True
-            continue
-        code += '      {:<20}  {:<};\n'.format(t,var)
-    code+='    };\n\n'
+from basevars import *
 
-    code0='    class {} :'.format(part)
-    if not isMom and not isKid:
-        code0 += ' public AnalysisBase::Particle'
-    elif isMom and isKid:
-        code0 += ' public AnalysisBase::InterParticle'
-    elif isMom:
-        code0+= ' public AnalysisBase::MotherParticle'
-    elif isKid:
-        code0 += ' public AnalysisBase::StableParticle'
-
-    code0+=' {\n'
-
-    return code0+code
 
 def partaddresses(part,varlist):
     code = ''
@@ -86,27 +59,34 @@ if __name__ == '__main__':
     #create a class with leaves as data members
     outdir = os.path.realpath(args.output)
     packname = os.path.basename(outdir)
+    defname = packname.upper().replace('_','')
+    #create the derived particles for this package and get their dictionary back
+    import gencommonparticles
+    packparts = gencommonparticles.gencommonparticles( tree, outdir )
+
+    code='#ifndef {}_VARS_H\n#define {}_VARS_H\n\n'.format(defname,defname)
     
-    code='#include "Particles.h"\n'
-    code += preamble(packname,args.classname)
+    code+='#include "{}Particles.h"\n'.format(packname.capitalize())
+    code+='class TTree;\n\nnamespace {} {{\n\n'.format(packname)
     
 
     #make structures for the particles
 
     leaves = tree.GetListOfLeaves()
     import collections
+
+    #dictionary to keep track of ALL the variables we have available -- need all so we can set branch addresses
     pldict = collections.OrderedDict()
     
     loners = []
 
     for lf in tree.GetListOfLeaves():
         n = lf.GetName()
-        #these are already in the base decaytreeloop:
-        if( n=='eventNumber' or n=='runNumber'):
-            continue
-
         t = lf.GetTypeName()
 
+        if n == 'eventNumber' or n=='runNumber':
+            continue
+        
         #some exceptions that need array - can be more dynamic in the future
         if "COV_" in n:
             n += "[3][3]"
@@ -115,33 +95,96 @@ if __name__ == '__main__':
 
         s = n.split('_',1)
 
-        if(len(s) == 1 ):
+        if(len(s) == 1): #new event level variable
             loners += [(t,n)]
-        else:
+        else: #some particle
             part = s[0]
             var = s[1]
 
-            if part in pldict:
-                pldict[ part ] += [(t,var)]
-            else:
+            #first add it to the pldict
+            if part not in pldict:
                 pldict[ part ] = [ (t,var), ]
+            else:
+                pldict[ part ] += [ (t,var) ]
 
+    #now we need to figure out the derivation for each particle
 
-    code += '  namespace {} {{\n\n'.format(args.classname)
+    #this dictionary tells you what the type will be in the _vars class member
+    classdict = {}
+    #this keeps track of which variables are new and need members declared
+    extravarsdict = {}
+    #list of particles we need to create a new derived class for, with what type they should inherit from
+    derivedtypedict = {}
+
+    #Loop over all the particles we want to bind:
     for part,varlist in pldict.iteritems():
-        code+=partclass(part,varlist)
-    code +=  '  }\n\n'
+        if part in packparts: #we have this type of particle in the package particles
+            #determine if we have any extra variables
+            extravarsdict[part] = []
+            for var in varlist:
+                if var not in packparts[part][1] and var[1] not in basevars:
+                    #check if its in the intermediate class definition
+                    if (packparts[part][0] == 'MotherParticle' and var[1] not in momvars) or (packparts[part][0] == 'InterParticle' and var[1] not in intervars) or (packparts[part][0] == 'StableParticle' and var[1] not in kidvars):
+                        extravarsdict[part] += [var]
 
-    code += '  class {}_vars {{\n\n    public:\n'.format(args.classname)
-    for t,n in loners:
-        code += '    {:<20}  {:<};\n'.format(t,n)
-    code += '\n'
+            if len(extravarsdict[part]) == 0:
+                #can just create an instance of the package type
+                classdict[part] = '{}::{}'.format(packname,part)
+            else:
+                #have to create a new one in the new namespace we need
+                classdict[part] = '{}::{}'.format(args.classname,part)
+                derivedtypedict[part] = '{}::{}'.format(packname,part)
+                
+        else: #not created yet -- need to make a new one deriving from a base particle type
+            classdict[part] = '{}::{}'.format(args.classname,part)
+            derivedtypedict[part] = 'AnalysisBase::Particle'
+            extravarsdict[part] = []
+            for var in varlist:
+                if var[1] in basevars:
+                    continue
+                if var[1] in momvars:
+                    if derivedtypedict[part] == 'AnalysisBase::StableParticle':
+                        derivedtypedict[part] = 'AnalysisBase::InterParticle'
+                    elif derivedtypedict[part] == 'AnalysisBase::Particle':
+                        derivedtypedict[part] = 'AnalysisBase::MotherParticle'
+                elif var[1] in kidvars:
+                    if derivedtypedict[part] == 'AnalysisBase::MotherParticle':
+                        derivedtypedict[part] = 'AnalysisBase::InterParticle'
+                    elif derivedtypedict[part] == 'AnalysisBase::Particle':
+                        derivedtypedict[part] = 'AnalysisBase::StableParticle'
+                else: #this variable is new
+                    extravarsdict[part] += [var]
+
+
+    #derived namespace
+    code += '  namespace {} {{\n\n'.format(args.classname)
+    ##Now do we need new classes in the derived namespace?
     for part in pldict:
-        code += '    {}::{:<6} {:<};\n'.format(args.classname,part,part)
+        if len(extravarsdict[part]) > 0:
+            #need one for this particle
+            code += '    class {} : public {} {{\n    public:\n'.format(part, derivedtypedict[part])
+            for var in extravarsdict[part]:
+                code+='      {:<20}  {:<};\n'.format(var[0],var[1])
+            code += '    };\n\n'
 
-    code += '\n    void attachTree(TTree * tree);\n\n  };\n}'
+    #end the derived namespace
+    code += '  }\n\n'
+        
+    #now make the variabels class
+    code += '  class {}_vars : public AnalysisBase::EventInfo {{\n\n    public:\n'.format(args.classname)
+    #now the particle members
+    for part in pldict:
+        code += '    {:<30}  {:<};\n'.format( classdict[part], part)
+    code += '\n'
+    #now the extra loner variables
+    for (t,var) in loners:
+        if var not in eventvars:
+            code += '    {:<30}  {:<};\n'.format(t,var)
+        
+    code += '\n    void attachTree(TTree * tree);\n\n  };\n}\n\n#endif\n'
 
     print code
+
     with open(outdir+'/include/{}_vars.h'.format(args.classname),'w') as ftarget:
         ftarget.write(code)
 

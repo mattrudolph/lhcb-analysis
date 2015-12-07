@@ -35,7 +35,7 @@ namespace bs2st_bu2kmutau {
 
   }
 
-  std::vector<double> MissingMassModule::process( const Bu & bu, const Kaon & km, const Mu & mu, const Kaon & kp ) {
+  std::vector<double> MissingMassModule::process( const AnalysisBase::InterParticle & bu, const AnalysisBase::Particle & km, const AnalysisBase::Particle & mu, const AnalysisBase::Particle & kp ) {
 
     std::vector<double> vmm = missingMassSq( bu, km, mu, kp );
     fillHistograms( vmm, (mu.PE + kp.PE)/1000. );

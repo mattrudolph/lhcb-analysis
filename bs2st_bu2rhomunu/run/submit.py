@@ -1,6 +1,5 @@
 """
-Submit bs2st2buk_kmux options 
-
+Submit bs2st2buk_rhomunu options 
 """
 
 class Submit(Submitter):
@@ -16,10 +15,12 @@ class Submit(Submitter):
         
 kmux = Submit()
 
-#Modify to determine what to run on; label of dataset in box and isMC flag
-kmux.dataToRun = [("SEMILEPTONIC.DST 2011 strip 21 MagUp",False),
-                  ("SEMILEPTONIC.DST 2011 strip 21 MagUp",False),
-]
+#Modify to determine what to run on; label of dataset in box and isMC 
+# kmux.dataToRun = [("SEMILEPTONIC.DST 2011 strip 21 MagUp",False),
+#                   ("SEMILEPTONIC.DST 2011 strip 21 MagUp",False),]
+kmux.dataToRun = [("SEMILEPTONIC.DST 2012 strip 21 MagUp",False),
+                  ("SEMILEPTONIC.DST 2012 strip 21 MagDown",False),
+                  ]
 
 #base options to run
 kmux.options = "../options/bs2st2buk_rhomunu.py"

@@ -1,12 +1,12 @@
 
 ##Basic Makefile for my setup
 #Only need to change this to the right package name (will be used to name shared library):
-PACKAGE=bs2st_bu2kmutau
+PACKAGE=bs2st_bu2rhomunu
 #Then it will compile all .cpp in util/ as executables in bin/
 #And all .cpp in src/ as objects, and then into a shared library; both in lib/
 
-MYDEPSLD=-L../analysisbase/lib -lanalysisbase
-MYDEPSC=-I../analysisbase/include
+MYDEPSLD=-L../analysisbase/lib -lanalysisbase -L../bs2st_bu2kmutau/lib -lbs2st_bu2kmutau
+MYDEPSC=-I../analysisbase/include -I../bs2st_bu2kmutau/include
 
 VPATH=src include lib bin util
 TARGETS := $(notdir $(basename $(wildcard util/*.cpp)))

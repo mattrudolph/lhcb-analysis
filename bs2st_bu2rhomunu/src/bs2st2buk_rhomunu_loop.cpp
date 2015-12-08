@@ -1,6 +1,7 @@
 
 #include "bs2st2buk_rhomunu_loop.h"
 //#include "MissingMass.h"
+#include "RhoMuSelectModule.h"
 #include "MissingMassModule.h"
 #include "TDirectory.h"
 #include "TH2.h"
@@ -43,7 +44,15 @@ namespace bs2st_bu2rhomunu {
   int bs2st2buk_rhomunu_loop::execute() {
 
     for(size_t i=0; i<m_v_bs2st.size(); ++i ) {
-    
+
+      //only run this for 1 bs2st bc of multiple attached kaons
+      if (i==0) {
+        m_rhomu_mod->fillHistograms( m_v_bu[i], m_v_rho[i], m_v_pip[i], m_v_pim[i], m_v_mu[i] );
+      }
+
+      if (m_v_rho[i].FDCHI2_ORIVX > 0.5 )
+        continue;
+      
       std::vector<double> vmm = m_mm_mod->process( m_v_bu[i], m_v_km[i], m_v_mu[i], m_v_rho[i] );
 
       double vis_e = (m_v_mu[i].PE + m_v_rho[i].PE)/1000.;
@@ -82,6 +91,9 @@ namespace bs2st_bu2rhomunu {
       std::cerr << "bs2st2buk_rhomunu_loop::initialize(): no outdir available" << std::endl;
       return 1;
     }
+
+    m_rhomu_mod = new RhoMuSelectModule(m_outdir);
+    m_modules.push_back(m_rhomu_mod);
     
     m_mm_mod = new bs2st_bu2kmutau::MissingMassModule(m_outdir,"MissingMass_Raw");
     m_modules.push_back(m_mm_mod);

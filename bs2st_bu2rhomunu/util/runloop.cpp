@@ -18,7 +18,7 @@ int main(int argc, char * argv[]) {
   }
   const char * outfile = parser.getCmdOption("-o", "bs2st2buk_rhomunu.root");
 
-  std::string dirs = parser.getCmdOption("-d", "Bss2BuK_RhoMuX_Tuple,Bss2BuKSS_RhoMuX_Tuple");
+  std::string dirs = parser.getCmdOption("-d", "Bs2st2BuK_RhoMuX_Tuple,Bs2st2BuKSS_RhoMuX_Tuple");
   std::vector<std::string> dirlist;
   std::string::size_type pos = dirs.find_first_of(",");
   while ( pos != std::string::npos ) {

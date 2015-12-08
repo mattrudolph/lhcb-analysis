@@ -8,6 +8,8 @@ namespace bs2st_bu2kmutau {
 }
 
 namespace bs2st_bu2rhomunu {
+
+  class RhoMuSelectModule;
   
   class bs2st2buk_rhomunu_loop : public bs2st2buk_rhomunu_vars, public AnalysisBase::DecayTreeLoop {
 
@@ -26,6 +28,7 @@ namespace bs2st_bu2rhomunu {
     std::vector<bs2st_bu2rhomunu::Mu> m_v_mu;
     std::vector<bs2st_bu2rhomunu::Km> m_v_km;
 
+    RhoMuSelectModule * m_rhomu_mod;
     bs2st_bu2kmutau::MissingMassModule * m_mm_mod;
     bs2st_bu2kmutau::MissingMassModule * m_mm_mod_cut;
 

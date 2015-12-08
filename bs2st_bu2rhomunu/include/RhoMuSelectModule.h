@@ -27,8 +27,10 @@ namespace bs2st_bu2rhomunu {
     TH1F * m_h_rho_vchi2;
     TH1F * m_h_rho_fdchi2;
 
-    TH1F * m_h_pi_pt;
-    TH1F * m_h_pi_p;
+    TH1F * m_h_pi_ptmin;
+    TH1F * m_h_pi_pmin;
+    TH1F * m_h_pi_ptmax;
+    TH1F * m_h_pi_pmax;
     TH1F * m_h_pi_eta;
     TH1F * m_h_pi_trchi2;
     TH1F * m_h_pi_trghost;
@@ -45,6 +47,7 @@ namespace bs2st_bu2rhomunu {
     TH1F * m_h_rhomu_p;
     TH1F * m_h_rhomu_eta;
     TH1F * m_h_rhomu_vchi2;
+    TH1F * m_h_rhomu_pvdchi2;
 
   };
 }

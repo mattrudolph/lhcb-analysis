@@ -1,4 +1,4 @@
-from bs2st_bu2rhomunu.options.bs2st2buk_rhomunu import *
+from bs2st_bu2rhomunu.options.bu2rhomunu import *
 
 from Configurables import DaVinci
 

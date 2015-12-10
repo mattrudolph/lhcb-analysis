@@ -15,6 +15,19 @@ then
     export PYTHONPATH=$PYTHONPATH:$DIR
 fi
 
+#add to ldpath
+PACKAGES=`ls -d $DIR/*/`
+for PACK in $PACKAGES
+do
+    if [[ :$LD_LIBRARY_PATH: != *:"${PACK}lib":* ]]
+    then
+	export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${PACK}lib
+    fi
+    if [[ :$DYLD_LIBRARY_PATH: != *:"${PACK}lib":* ]]
+    then
+	export DYLD_LIBRARY_PATH=$DYLD_LIBRARY_PATH:${PACK}lib
+    fi
+done
 
 if [ -z "$VO_LHCB_SW_DIR" ]
 then

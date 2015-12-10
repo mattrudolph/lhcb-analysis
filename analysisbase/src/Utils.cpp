@@ -1,8 +1,7 @@
-
-
 #include "Utils.h"
 #include "Particles.h"
 #include <iostream>
+#include <algorithm>
 
 namespace AnalysisBase {
 
@@ -11,5 +10,18 @@ namespace AnalysisBase {
   }
 
 
+  //Pass argv and argv+argc, and the string you are looking for
+  const char* cmdParser::getCmdOption(const std::string & option, const char * def) {
+    char ** itr = std::find(m_begin, m_end, option);
+    if (itr != m_end && ++itr != m_end)
+    {
+        return *itr;
+    }
+    return def;
+  }
+
+  bool cmdParser::cmdOptionExists(const std::string& option) {
+    return std::find(m_begin, m_end, option) != m_end;
+  }
 
 }

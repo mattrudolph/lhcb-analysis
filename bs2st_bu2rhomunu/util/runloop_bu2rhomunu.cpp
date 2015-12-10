@@ -1,6 +1,6 @@
 
 #include <iostream>
-#include "bs2st2buk_rhomunu_loop.h"
+#include "bu2rhomunu_loop.h"
 #include "Utils.h"
 
 #include "TFile.h"
@@ -16,9 +16,9 @@ int main(int argc, char * argv[]) {
     std::cerr << "No input file specified with -i" << std::endl;
     return 1;
   }
-  const char * outfile = parser.getCmdOption("-o", "bs2st2buk_rhomunu.root");
+  const char * outfile = parser.getCmdOption("-o", "bu2rhomunu_hist.root");
 
-  std::string dirs = parser.getCmdOption("-d", "Bs2st2BuK_RhoMuX_Tuple,Bs2st2BuKSS_RhoMuX_Tuple");
+  std::string dirs = parser.getCmdOption("-d", "Bu2RhoMuX_Tuple");
   std::vector<std::string> dirlist;
   std::string::size_type pos = dirs.find_first_of(",");
   while ( pos != std::string::npos ) {
@@ -43,7 +43,7 @@ int main(int argc, char * argv[]) {
       continue;
     }
 
-    bs2st_bu2rhomunu::bs2st2buk_rhomunu_loop l(tree,&fout, *it );
+    bs2st_bu2rhomunu::bu2rhomunu_loop l(tree,&fout, *it );
     int res = l.initialize();
     if(res) 
       return res;
@@ -55,7 +55,6 @@ int main(int argc, char * argv[]) {
     res = l.finalize();
     if(res) 
       return res;
-
   }
 
   return 0;

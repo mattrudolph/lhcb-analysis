@@ -1,5 +1,6 @@
 #include "RhoMuSelectModule.h"
 #include "TH1F.h"
+#include "TH2F.h"
 #include "TLorentzVector.h"
 #include <cmath>
 
@@ -87,13 +88,25 @@ namespace bs2st_bu2rhomunu {
     m_h_rhomu_vchi2 = new TH1F("h_rhomu_vchi2","rhomu vchi2; Vtx #Chi^{2}/NDF",200,0,50);
     addout(m_h_rhomu_vchi2);
     
-    m_h_rhomu_pvdchi2 = new TH1F("h_rhomu_pvdchi2","rhomu pvdchi2; #Chi^{2}/NDF",200,100,900);
+    m_h_rhomu_pvdchi2 = new TH1F("h_rhomu_pvdchi2","rhomu pvdchi2; #Chi^{2}/NDF",200,100,4100);
     addout(m_h_rhomu_pvdchi2);
 
+    //this ratio variable they have
+    m_h_sol1 = new TH1F("h_sol1","sol1; q [MeV]",200,0,400);
+    addout(m_h_sol1);
+    m_h_sol2 = new TH1F("h_sol2","sol2; q [MeV]",200,0,400);
+    addout(m_h_sol2);
+    m_h_ratio = new TH1F("h_ratio","ratio; Ratio",200,-2,2);
+    addout(m_h_ratio);
+
+    //correlate the ratio
+    m_h_ratio_v_mrhomu = new TH2F("h_ratio_v_mrhomu","Ratio v m_rhomu; m_{#pi#pi#mu} [GeV]; Ratio",20,2,6,20,0.31,1.01);
+    addout(m_h_ratio_v_mrhomu);
+    
     return 0;
   }
 
-  void RhoMuSelectModule::fillHistograms( const Bu & rhomu, const Rho & rho, const Pip & pi1, const Pim & pi2, const Mu & mu ) {
+  double RhoMuSelectModule::fillHistograms( const Bu & rhomu, const Rho & rho, const Pip & pi1, const Pim & pi2, const Mu & mu ) {
 
 
     m_h_rho_m->Fill( rho.M );
@@ -125,6 +138,42 @@ namespace bs2st_bu2rhomunu {
     m_h_rhomu_eta->Fill( rhomu.ETA );
     m_h_rhomu_vchi2->Fill( rhomu.VCHI2PDOF );
     m_h_rhomu_pvdchi2->Fill( rhomu.BPVVDCHI2 );
+
+
+    //ratio calculation
+    const double mbu = 5279.29; //+-0.15
+    
+    double dx = rhomu.ENDVERTEX_X - rhomu.OWNPV_X;
+    double dy = rhomu.ENDVERTEX_Y - rhomu.OWNPV_Y;
+    double dz = rhomu.ENDVERTEX_Z - rhomu.OWNPV_Z;
+
+    double norm = std::sqrt( dx*dx + dy*dy + dz*dz );
+
+    double pxrhomu = rhomu.PX;
+    double pyrhomu = rhomu.PY;
+    double pzrhomu = rhomu.PZ;
+
+    double bflight = ( dx*pxrhomu + dy*pyrhomu + dz*pzrhomu )/norm;
+
+    double m2 = mbu*mbu + rhomu.M*rhomu.M;
+
+    double a = bflight*bflight - rhomu.PE*rhomu.PE;
+    double b = m2*bflight;
+    double c = m2*m2/4 - rhomu.PE*rhomu.PE*mbu*mbu;
+
+    double rtdisc = std::sqrt(std::max(b*b - 4*a*c,0.));
+
+    double sol1= ( -b + rtdisc ) / (2*a);
+    m_h_sol1->Fill(sol1/1000.);
+    double sol2= ( -b - rtdisc ) / (2*a);
+    m_h_sol2->Fill(sol2/1000.);
+    
+    double ratio = sol1/sol2;
+    m_h_ratio->Fill(ratio);
+
+    m_h_ratio_v_mrhomu->Fill(rhomu.M/1000., ratio);
+    
+    return ratio;
   }
 
 }

@@ -17,7 +17,7 @@ class Submit(Submitter):
 kmux = Submit()
 
 #Modify to determine what to run on; label of dataset in box and isMC flag
-kmux.dataToRun = [("Bu->rhomunu MagDown",True),
+kmux.dataToRun = [#("Bu->rhomunu MagDown",True),
                   ("Bu->rhomunu MagUp",True),
                   ]
 

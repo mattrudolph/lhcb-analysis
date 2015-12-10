@@ -5,6 +5,7 @@
 #include "Bs2st_bu2rhomunuParticles.h"
 
 class TH1F;
+class TH2F;
 
 namespace bs2st_bu2rhomunu {
 
@@ -16,7 +17,7 @@ namespace bs2st_bu2rhomunu {
 
     virtual int bookHistograms();
 
-    void fillHistograms( const Bu & rhomu, const Rho & rho, const Pip & pi1, const Pim & pi2, const Mu & mu );
+    double fillHistograms( const Bu & rhomu, const Rho & rho, const Pip & pi1, const Pim & pi2, const Mu & mu );
 
   private:
 
@@ -49,6 +50,10 @@ namespace bs2st_bu2rhomunu {
     TH1F * m_h_rhomu_vchi2;
     TH1F * m_h_rhomu_pvdchi2;
 
+    TH1F * m_h_sol1;
+    TH1F * m_h_sol2;
+    TH1F * m_h_ratio;
+    TH2F * m_h_ratio_v_mrhomu;
   };
 }
 

@@ -45,13 +45,11 @@ namespace bs2st_bu2rhomunu {
 
     for(size_t i=0; i<m_v_bs2st.size(); ++i ) {
 
-      //only run this for 1 bs2st bc of multiple attached kaons
-      if (i==0) {
-        m_rhomu_mod->fillHistograms( m_v_bu[i], m_v_rho[i], m_v_pip[i], m_v_pim[i], m_v_mu[i] );
-      }
-
-      if (m_v_rho[i].FDCHI2_ORIVX > 0.5 )
+      bool pass = (m_rhomu_mod->fillHistograms( m_v_bu[i], m_v_rho[i], m_v_pip[i], m_v_pim[i], m_v_mu[i] ) > 0.4);
+      pass = pass && (m_v_pip[i].PIDK < 0) && (m_v_pim[i].PIDK < 0) && (m_v_bu[i].BPVVDCHI2 > 1000);
+      if(!pass)
         continue;
+      
       
       std::vector<double> vmm = m_mm_mod->process( m_v_bu[i], m_v_km[i], m_v_mu[i], m_v_rho[i] );
 

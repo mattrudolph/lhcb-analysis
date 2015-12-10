@@ -4,7 +4,8 @@ Provides selections for B*_s20 -> (B+ -> J/psi K+) K- staring from (B+ -> J/psi 
 """
 
 line = "BetaSBu2JpsiKDetachedLine"
-location = "/Event/AllStreams/Phys/"+line+"/Particles"
+#location = "/Event/AllStreams/Phys/"+line+"/Particles"
+location = "/Event/Dimuon/Phys/"+line+"/Particles"
 
 from Configurables import LoKi__HDRFilter,FilterDesktop
 from PhysSelPython.Wrappers import AutomaticData, Selection, SelectionSequence
